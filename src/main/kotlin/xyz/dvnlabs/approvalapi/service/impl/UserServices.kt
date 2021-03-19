@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
 import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
+import xyz.dvnlabs.approvalapi.core.exception.UnauthorizedException
 import xyz.dvnlabs.approvalapi.core.security.JwtUtils
 import xyz.dvnlabs.approvalapi.core.security.UserDetails
 import xyz.dvnlabs.approvalapi.dao.RoleDAO
@@ -85,7 +86,8 @@ class UserServices : UserService {
             val jwt = jwtUtils.generateToken(authentication)
             return UserLoginResponse(jwt, principal.username, "")
         } catch (e: AuthenticationException) {
-            println("MSH ${e.message}")
+            println("Username ${e.message}")
+            throw UnauthorizedException(e.message!!)
         }
         return null
     }

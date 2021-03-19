@@ -1,0 +1,21 @@
+version: '2'
+services:
+  dvn-backend:
+    image: dvn/backend:latest
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    restart: always
+    networks:
+      - dvn-network
+    ports:
+      - 8080:8080
+    expose:
+      - 8080/tcp
+      - 8080/udp
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://172.17.132.147:27017/approvalapi?readPreference=primary&ssl=false
+
+networks:
+  dvn-network:
+    driver: bridge

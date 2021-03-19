@@ -12,10 +12,6 @@ data class User(
     @Indexed(unique = true)
     @Field
     var email: String = "",
-    @Field
-    var idEmp: String = "",
-    @Field
-    var name: String = "",
     @Indexed(unique = true)
     @Field
     var userName: String = "",
