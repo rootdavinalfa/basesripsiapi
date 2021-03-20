@@ -15,6 +15,9 @@ services:
       - 8080/udp
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://172.17.132.147:27017/approvalapi?readPreference=primary&ssl=false
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
 
 networks:
   dvn-network:
