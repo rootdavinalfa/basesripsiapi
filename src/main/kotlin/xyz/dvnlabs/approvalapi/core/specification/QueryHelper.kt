@@ -12,6 +12,18 @@ import xyz.dvnlabs.approvalapi.core.helper.isList
 import xyz.dvnlabs.approvalapi.core.helper.isNull
 import xyz.dvnlabs.approvalapi.core.helper.isString
 
+/**
+ * ## QueryHelper
+ * Class for helping you building criteria using Spring Data MongoDB criteria
+ *
+ * See Also:
+ * - [addOne]
+ * - [addCriteria]
+ * - [and]
+ * - [or]
+ * - [build]
+ * - [buildQuery]
+ */
 class QueryHelper {
 
     var criteriaChain: MutableList<Criteria> = ArrayList()
@@ -55,6 +67,38 @@ class QueryHelper {
                 )
             }
 
+            QueryOperation.GREATER_THAN -> {
+                value?.let {
+                    criteriaChain.add(
+                        Criteria.where(field).gt(it)
+                    )
+                }
+            }
+
+            QueryOperation.GREATER_THAN_EQUAL -> {
+                value?.let {
+                    criteriaChain.add(
+                        Criteria.where(field).gte(it)
+                    )
+                }
+            }
+
+            QueryOperation.LESS_THAN -> {
+                value?.let {
+                    criteriaChain.add(
+                        Criteria.where(field).lt(it)
+                    )
+                }
+            }
+
+            QueryOperation.LESS_THAN_EQUAL -> {
+                value?.let {
+                    criteriaChain.add(
+                        Criteria.where(field).lte(it)
+                    )
+                }
+            }
+
             else -> {
                 specificType(field, value, operation, required)
             }
@@ -92,6 +136,15 @@ class QueryHelper {
             QueryOperation.MATCH_START -> {
                 criteriaChain.add(Criteria.where(field).regex("^$value", "i"))
             }
+
+            QueryOperation.EQUAL_IN -> {
+                criteriaChain.add(Criteria.where(field).`in`(value))
+            }
+
+            QueryOperation.NOT_IN -> {
+                criteriaChain.add(Criteria.where(field).nin(value))
+            }
+
             else -> {
                 return this
             }
