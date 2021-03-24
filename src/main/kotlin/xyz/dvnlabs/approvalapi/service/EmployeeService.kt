@@ -10,6 +10,9 @@ import xyz.dvnlabs.approvalapi.entity.Employee
 
 interface EmployeeService : GenericService<Employee, String> {
 
-    fun getEmployeeByNameOrPlacement(name: String, placement: String) : List<Employee>?
+    fun getEmployeeByNameOrPlacement(name: String, placement: String): List<Employee>?
 
+    fun attachUser(id: String, userName: String, employeeID: String): Employee
+
+    fun detachUser(id: String, userName: String, employeeID: String): Employee
 }

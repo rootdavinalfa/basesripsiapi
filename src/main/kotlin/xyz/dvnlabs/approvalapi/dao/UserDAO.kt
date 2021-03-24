@@ -6,7 +6,6 @@
 
 package xyz.dvnlabs.approvalapi.dao
 
-import org.springframework.data.mongodb.repository.Query
 import org.springframework.stereotype.Repository
 import xyz.dvnlabs.approvalapi.entity.User
 
@@ -14,6 +13,8 @@ import xyz.dvnlabs.approvalapi.entity.User
 interface UserDAO : GenericDAO<User, String> {
 
     fun findByUserName(userName: String): User?
+
+    fun findByUserNameOrId(userName: String, id: String): User?
 
     fun existsByIdOrUserName(id: String, userName: String): Boolean
 

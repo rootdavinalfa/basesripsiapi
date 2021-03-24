@@ -17,6 +17,7 @@ import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
 import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
 import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.dao.EmployeeDAO
+import xyz.dvnlabs.approvalapi.dao.UserDAO
 import xyz.dvnlabs.approvalapi.entity.Employee
 import xyz.dvnlabs.approvalapi.service.EmployeeService
 
@@ -26,6 +27,9 @@ class EmployeeServiceImpl : EmployeeService {
 
     @Autowired
     private lateinit var employeeDAO: EmployeeDAO
+
+    @Autowired
+    private lateinit var userDAO: UserDAO
 
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
@@ -75,5 +79,23 @@ class EmployeeServiceImpl : EmployeeService {
                 .buildQuery(), Employee::class.java
         )
 
+    }
+
+    override fun attachUser(id: String, userName: String, employeeID: String): Employee {
+        return userDAO.findByUserNameOrId(userName, id)?.let {
+            val employee = employeeDAO.findById(employeeID)
+                .orElseThrow { ResourceNotFoundException("Employee not found") }
+            employee.user = it
+            return@let update(employee)
+        } ?: kotlin.run {
+            throw ResourceNotFoundException("User not found!")
+        }
+    }
+
+    override fun detachUser(id: String, userName: String, employeeID: String): Employee {
+        val employee = employeeDAO.findById(employeeID)
+            .orElseThrow { ResourceNotFoundException("Employee not found") }
+        employee.user = null
+        return update(employee)
     }
 }

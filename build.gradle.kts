@@ -5,6 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	kotlin("jvm") version "1.4.21"
 	kotlin("plugin.spring") version "1.4.21"
+	id ("org.jetbrains.kotlin.plugin.allopen") version "1.4.21"
 }
 
 group = "xyz.dvnlabs"
@@ -14,6 +15,9 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 configurations {
 	compileOnly {
 		extendsFrom(configurations.annotationProcessor.get())
+	}
+	allOpen {
+		annotation("org.springframework.data.mongodb.core.mapping.Document")
 	}
 }
 

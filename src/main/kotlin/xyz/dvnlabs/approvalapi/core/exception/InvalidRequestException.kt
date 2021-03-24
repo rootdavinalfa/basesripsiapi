@@ -10,4 +10,4 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-data class QueryHelperException(val messageStr: String) : Exception(messageStr)
+data class InvalidRequestException(val messageStr: String) : Exception(messageStr)
