@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "primary.db.uri",
+      "type": "java.lang.String",
+      "description": "Configuration for database URI"
+    },
+    {
+      "name": "primary.config.expiredDay",
+      "type": "java.lang.Long",
+      "description": "Configuration for expired token in day"
+    },
+    {
+      "name": "primary.config.tokenSecret",
+      "type": "java.lang.String",
+      "description": "Configuration for token (JWT) secret"
+    }
+  ]
+}

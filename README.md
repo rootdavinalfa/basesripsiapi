@@ -16,5 +16,7 @@ Feel free to use this as basis of your project or your own Thesis
 
 ## Configuration:
 You may want to change application.properties to :
-`spring.data.mongodb.uri=spring.data.mongodb.uri=mongodb://username:password@localhost:27017/databasename`
+- `primary.db.uri=mongodb://username:password@localhost:27017/databasename`
+- `primary.config.expiredDay={DAY IN INTEGER}`
+- `primary.config.tokenSecret={TOKEN SECRET}`
 
