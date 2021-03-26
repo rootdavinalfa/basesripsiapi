@@ -26,7 +26,7 @@ class JwtUtils {
     lateinit var configuration: Configuration
 
     companion object {
-        const val ONE_DAY_IN_MS: Long = 1000 * 60 * 24
+        const val ONE_DAY_IN_MS: Long = 1000 * 60 * 60 * 24
     }
 
     fun generateToken(authentication: Authentication): String {
