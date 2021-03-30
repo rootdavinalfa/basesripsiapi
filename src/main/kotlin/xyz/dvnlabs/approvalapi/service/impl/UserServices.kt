@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
 import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
 import xyz.dvnlabs.approvalapi.core.exception.UnauthorizedException
+import xyz.dvnlabs.approvalapi.core.helper.CopyNonNullProperties
 import xyz.dvnlabs.approvalapi.core.security.JwtUtils
 import xyz.dvnlabs.approvalapi.core.security.UserDetails
 import xyz.dvnlabs.approvalapi.dao.RoleDAO
@@ -95,7 +96,6 @@ class UserServices : UserService {
             println("Username ${e.message}")
             throw UnauthorizedException(e.message!!)
         }
-        return null
     }
 
     override fun save(entity: User): User {
@@ -165,10 +165,14 @@ class UserServices : UserService {
     }
 
     override fun update(entity: User): User {
-        if (!userDAO.existsByIdOrUserName(entity.id, entity.userName)) {
+        return userDAO.findByUserNameOrId(entity.userName, entity.id)
+            ?.let {
+                CopyNonNullProperties.copyNonNullProperties(entity, it)
+                return userDAO.save(entity)
+            } ?: kotlin.run {
             throw ResourceNotFoundException("Username ${entity.userName} tidak ada")
         }
-        return userDAO.save(entity)
+
     }
 
     override fun findAll(): MutableList<User> {

@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.4.21"
 	kotlin("plugin.spring") version "1.4.21"
 	id ("org.jetbrains.kotlin.plugin.allopen") version "1.4.21"
+	kotlin("kapt") version "1.4.21"
 }
 
 group = "xyz.dvnlabs"
@@ -26,6 +27,9 @@ repositories {
 }
 
 dependencies {
+	//RxKotlin
+	implementation("io.reactivex.rxjava3:rxkotlin:3.0.1")
+
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
 	implementation("org.springframework.boot:spring-boot-starter-security")
@@ -46,9 +50,15 @@ dependencies {
 	implementation("io.springfox:springfox-boot-starter:3.0.0")
 	implementation("io.springfox:springfox-swagger-ui:3.0.0")
 	implementation("org.springframework.security:spring-security-crypto:5.3.4.RELEASE")
+
+	//Jwt
 	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
+
+	//Mapstruct
+	implementation("org.mapstruct:mapstruct:1.4.2.Final")
+	kapt("org.mapstruct:mapstruct-processor:1.4.2.Final")
 }
 
 tasks.withType<KotlinCompile> {
