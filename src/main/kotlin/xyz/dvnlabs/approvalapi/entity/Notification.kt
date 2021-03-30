@@ -7,15 +7,12 @@
 package xyz.dvnlabs.approvalapi.entity
 
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import xyz.dvnlabs.approvalapi.core.audit.AuditEntity
+import java.util.*
 
 @Document
-data class Employee(
-    @Id var idEmployee: String = "",
-    var employeeName: String = "",
-    var placement: String = "",
-    @DBRef(lazy = true)
-    var user: User? = null
+data class Notification(
+    @Id var id : String = "",
+    var transactionID : String = ""
 ) : AuditEntity()
