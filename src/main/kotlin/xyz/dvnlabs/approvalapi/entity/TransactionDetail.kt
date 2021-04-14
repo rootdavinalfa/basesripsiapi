@@ -8,6 +8,7 @@
 package xyz.dvnlabs.approvalapi.entity
 
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import xyz.dvnlabs.approvalapi.core.audit.AuditEntity
 
@@ -15,5 +16,7 @@ import xyz.dvnlabs.approvalapi.core.audit.AuditEntity
 data class TransactionDetail(
     @Id var id: TransactionDetailPK = TransactionDetailPK(),
     var detailRequest: String = "",
-    var drug: Drugs? = null
+    @DBRef(lazy = true)
+    var drug: Drugs? = null,
+    var qty: Double = 0.0
 ) : AuditEntity()

@@ -9,16 +9,14 @@ package xyz.dvnlabs.approvalapi.mapper
 import org.mapstruct.InheritInverseConfiguration
 import org.mapstruct.Mapper
 import org.mapstruct.ReportingPolicy
-import xyz.dvnlabs.approvalapi.dto.UserDTO
-import xyz.dvnlabs.approvalapi.dto.UserNoPasswordDTO
-import xyz.dvnlabs.approvalapi.entity.User
+import xyz.dvnlabs.approvalapi.dto.UnitDTO
+import xyz.dvnlabs.approvalapi.entity.Unit
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-interface UserMapper : GenericMapper<User, UserDTO> {
-    override fun asEntity(dto: UserDTO?): User
+interface UnitMapper : GenericMapper<Unit, UnitDTO> {
+    override fun asEntity(dto: UnitDTO?): Unit
 
     @InheritInverseConfiguration
-    override fun asDTO(entity: User?): UserDTO
+    override fun asDTO(entity: Unit?): UnitDTO
 
-    fun asUserNoPasswordDTO(entity: User): UserNoPasswordDTO
 }
