@@ -1,6 +1,8 @@
 ## Welcome to Base Skripsi API
 Copyright 2021 - Davin Alfarizky Putra Basudewa
 
+[![BaseSkripsi API](https://github.com/rootdavinalfa/basesripsiapi/actions/workflows/main.yml/badge.svg)](https://github.com/rootdavinalfa/basesripsiapi/actions/workflows/main.yml)
+
 This repository contain API for my Thesis for Undergraduate on Universitas Banten Jaya
 Feel free to use this as basis of your project or your own Thesis
 
@@ -10,7 +12,7 @@ Feel free to use this as basis of your project or your own Thesis
 3. MongoDB for database
 
 ## Requirements:
-1. Java 8+ (OpenJDK preferred)
+1. Java 11+ (OpenJDK preferred)
 2. Kotlin Stdlib 1.4.x
 3. MongoDB
 
