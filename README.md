@@ -12,7 +12,7 @@ Feel free to use this as basis of your project or your own Thesis
 3. MongoDB for database
 
 ## Requirements:
-1. Java 8+ (OpenJDK preferred)
+1. Java 11+ (OpenJDK preferred)
 2. Kotlin Stdlib 1.4.x
 3. MongoDB
 
