@@ -7,11 +7,11 @@
 package xyz.dvnlabs.approvalapi.mapper
 
 interface GenericMapper<E, DTO> {
-    fun asEntity(dto: DTO): E
+    fun asEntity(dto: DTO?): E
 
-    fun asDTO(entity: E): DTO
+    fun asDTO(entity: E?): DTO
 
-    fun asEntityList(dtoList: List<DTO>): List<E>
+    fun asEntityList(dtoList: List<DTO>?): List<E>
 
-    fun asDTOList(entityList: List<E>): List<DTO>
+    fun asDTOList(entityList: List<E>?): List<DTO>
 }
