@@ -39,3 +39,14 @@ jobs:
        port: 22
        user: ${{ secrets.SSH_USER }}
        key: ${{ secrets.SSH_KEY }}
+    - name: multiple command
+      uses: appleboy/ssh-action@master
+      with:
+       host: ${{ secrets.SSH_HOST }}
+       username: ${{ secrets.SSH_USER }}
+       key: ${{ secrets.SSH_KEY }}
+       port: 22
+       script: |
+        cd /home/${{ secrets.SSH_USER }}/project/basesripsiapi/
+        docker-compose up --build -d
+        
