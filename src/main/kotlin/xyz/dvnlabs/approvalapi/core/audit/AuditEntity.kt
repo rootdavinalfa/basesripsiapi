@@ -15,11 +15,11 @@ import java.util.*
 
 abstract class AuditEntity(
     @CreatedBy
-    var createdBy: String = "",
+    var createdBy: String? = null,
     @CreatedDate
     var createdDate: Date = Date(),
     @LastModifiedBy
     var lastModifiedBy: String = "",
     @LastModifiedDate
-    var lastModifiedDate: Date = Date()
+    var lastModifiedDate: Date = Date(),
 )

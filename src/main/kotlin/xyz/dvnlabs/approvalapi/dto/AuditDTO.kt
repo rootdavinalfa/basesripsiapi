@@ -9,8 +9,8 @@ package xyz.dvnlabs.approvalapi.dto
 import java.util.*
 
 abstract class AuditDTO(
-    var createdBy: String = "",
+    var createdBy: String? = null,
     var createdDate: Date = Date(),
     var lastModifiedBy: String = "",
-    var lastModifiedDate: Date = Date()
+    var lastModifiedDate: Date = Date(),
 )

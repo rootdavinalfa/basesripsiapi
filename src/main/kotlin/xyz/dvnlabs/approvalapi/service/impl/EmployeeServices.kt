@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
 import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
 import xyz.dvnlabs.approvalapi.core.helper.CommonHelper
+import xyz.dvnlabs.approvalapi.core.helper.CopyNonNullProperties
 import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
 import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.dao.EmployeeDAO
@@ -59,11 +60,14 @@ class EmployeeServices : EmployeeService {
     }
 
     override fun update(entity: Employee): Employee {
-        if (!employeeDAO.existsById(entity.idEmployee)) {
-            throw ResourceNotFoundException("Employee with ID: ${entity.idEmployee} is not exist!")
-        }
-
-        return employeeDAO.save(entity)
+        return employeeDAO.findById(entity.idEmployee)
+            .map {
+                CopyNonNullProperties.copyNonNullProperties(entity, it)
+                return@map employeeDAO.save(it)
+            }
+            .orElseThrow {
+                ResourceNotFoundException("Employee not found")
+            }
     }
 
     override fun findAll(): MutableList<Employee> {
