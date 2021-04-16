@@ -19,7 +19,7 @@ jobs:
           src: ./build/libs/*.jar
           host: ${{ secrets.SSH_HOST }}
           remote: /home/${{ secrets.SSH_USER }}/project/basesripsiapi/build/libs
-          port: 21
+          port: 22
           user: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
        - name: trigger single Job
