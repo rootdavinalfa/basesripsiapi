@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: ApprovalAPI Deploy
 
 # Controls when the action will run. 
 on:
@@ -13,15 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-       - name: Copy To Server
-         uses: nogsantos/scp-deploy@master
-         with:
-          src: ./build/libs/*.jar
-          host: ${{ secrets.SSH_HOST }}
-          remote: /home/${{ secrets.SSH_USER }}/project/basesripsiapi/build/libs
-          port: 22
-          user: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
        - name: trigger single Job
          uses: appleboy/jenkins-action@master
          with:
