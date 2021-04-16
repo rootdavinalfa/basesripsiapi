@@ -1,7 +1,8 @@
 /*
  * Copyright (c) 2021.
- * Davin Alfarizky Putra Basudewa <dbasudewa@gmail.com>
- * Skripshit API
+ * Davin Alfarizky Putra Basudewa
+ * Skripsi BaseAPI
+ * Educational Purposes & Reference Only
  */
 
 package xyz.dvnlabs.approvalapi.entity
@@ -11,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import xyz.dvnlabs.approvalapi.core.audit.AuditEntity
 
 @Document
-data class Notification(
-    @Id var id: Long = 0,
-    var transactionID: String = ""
+data class Unit(
+    @Id var unitID: String = "",
+    var unitName: String = ""
 ) : AuditEntity()

@@ -74,7 +74,7 @@ class CopyNonNullProperties {
          * **Note:**
          *
          *  1. Ignored process is case sensitive
-         *  1. Must specified dontProcessProperties
+         *  2. Must specified dontProcessProperties
          *
          *
          * [src]                   the src
