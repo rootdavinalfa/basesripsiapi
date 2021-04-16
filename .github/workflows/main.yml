@@ -30,3 +30,12 @@ jobs:
       run: chmod +x ./gradlew
     - name: Build with Gradle
       run: ./gradlew bootJar
+    - name: Copy To Server
+      uses: nogsantos/scp-deploy@master
+      with:
+       src: build/libs/*.jar
+       host: ${{ secrets.SSH_HOST }}
+       remote: /home/${{ secrets.SSH_USER }}/project/basesripsiapi/build/libs
+       port: 22
+       user: ${{ secrets.SSH_USER }}
+       key: ${{ secrets.SSH_KEY }}
