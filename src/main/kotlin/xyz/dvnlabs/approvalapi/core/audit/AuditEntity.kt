@@ -6,7 +6,10 @@
 
 package xyz.dvnlabs.approvalapi.core.audit
 
-import org.springframework.data.annotation.*
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
 import java.util.*
 
 
@@ -18,7 +21,5 @@ abstract class AuditEntity(
     @LastModifiedBy
     var lastModifiedBy: String = "",
     @LastModifiedDate
-    var lastModifiedDate: Date = Date(),
-    @Version
-    var version: Long = 0
+    var lastModifiedDate: Date = Date()
 )

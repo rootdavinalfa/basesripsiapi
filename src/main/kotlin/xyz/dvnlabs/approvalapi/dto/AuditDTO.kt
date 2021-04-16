@@ -6,13 +6,11 @@
 
 package xyz.dvnlabs.approvalapi.dto
 
-import org.springframework.data.annotation.*
 import java.util.*
 
 abstract class AuditDTO(
     var createdBy: String = "",
     var createdDate: Date = Date(),
     var lastModifiedBy: String = "",
-    var lastModifiedDate: Date = Date(),
-    var version: Long = 0
+    var lastModifiedDate: Date = Date()
 )

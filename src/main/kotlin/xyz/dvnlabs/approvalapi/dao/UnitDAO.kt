@@ -13,7 +13,6 @@ import xyz.dvnlabs.approvalapi.entity.Unit
 @Repository
 interface UnitDAO : GenericDAO<Unit, String> {
 
-
     @Aggregation(
         "{" +
                 "\$group: { _id: {\n" +

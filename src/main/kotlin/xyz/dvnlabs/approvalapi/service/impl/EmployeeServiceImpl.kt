@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
 import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
+import xyz.dvnlabs.approvalapi.core.helper.CommonHelper
 import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
 import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.dao.EmployeeDAO
 import xyz.dvnlabs.approvalapi.dao.UserDAO
 import xyz.dvnlabs.approvalapi.entity.Employee
 import xyz.dvnlabs.approvalapi.service.EmployeeService
+import java.util.*
 
 @Service
 @Transactional(rollbackFor = [Exception::class])
@@ -40,6 +42,15 @@ class EmployeeServiceImpl : EmployeeService {
     }
 
     override fun save(entity: Employee): Employee {
+
+        val max = employeeDAO.firstIDDesc()
+
+        entity.idEmployee = CommonHelper.getStringSeq(max?.let {
+            return@let it
+        } ?: kotlin.run {
+            return@run "XXXX000"
+        }, Date(), "", "", 3, true, "yyMM")
+
         if (employeeDAO.existsById(entity.idEmployee)) {
             throw ResourceExistsException("Employee with ID: ${entity.idEmployee} is exist!")
         }
