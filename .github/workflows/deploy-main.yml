@@ -1,0 +1,37 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  workflow_run:
+    workflows: ["BaseSkripsi API"]
+    types: [completed]
+jobs:
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+       - name: Copy To Server
+         uses: nogsantos/scp-deploy@master
+         with:
+          src: ./build/libs/*.jar
+          host: ${{ secrets.SSH_HOST }}
+          remote: /home/${{ secrets.SSH_USER }}/project/basesripsiapi/build/libs
+          port: 21
+          user: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+       - name: trigger single Job
+         uses: appleboy/jenkins-action@master
+         with:
+          url: "http://srv.dvnlabs.xyz:8888"
+          user: ${{ secrets.USER_JENKINS }}
+          token: ${{ secrets.TOKEN_JENKINS }}
+          job: "DeployAPI"
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Deploy Failed
+        run: echo 'DEPLOY FAILED'
