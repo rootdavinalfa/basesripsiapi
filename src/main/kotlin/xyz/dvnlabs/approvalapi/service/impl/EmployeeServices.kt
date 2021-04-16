@@ -25,7 +25,7 @@ import java.util.*
 
 @Service
 @Transactional(rollbackFor = [Exception::class])
-class EmployeeServiceImpl : EmployeeService {
+class EmployeeServices : EmployeeService {
 
     @Autowired
     private lateinit var employeeDAO: EmployeeDAO
