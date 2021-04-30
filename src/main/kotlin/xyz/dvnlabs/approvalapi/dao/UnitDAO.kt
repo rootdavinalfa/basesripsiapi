@@ -8,10 +8,11 @@ package xyz.dvnlabs.approvalapi.dao
 
 import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.stereotype.Repository
-import xyz.dvnlabs.approvalapi.entity.Employee
+import xyz.dvnlabs.approvalapi.entity.Unit
 
 @Repository
-interface EmployeeDAO : GenericDAO<Employee, String>{
+interface UnitDAO : GenericDAO<Unit, String> {
+
     @Aggregation(
         "{" +
                 "\$group: { _id: {\n" +
@@ -31,4 +32,5 @@ interface EmployeeDAO : GenericDAO<Employee, String>{
     )
             /*@Aggregation("{ \$limit: 1 , \$sort: {_id : -1}}")*/
     fun firstIDDesc(): String?
+
 }

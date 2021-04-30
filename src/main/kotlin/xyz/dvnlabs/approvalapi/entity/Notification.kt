@@ -12,6 +12,6 @@ import xyz.dvnlabs.approvalapi.core.audit.AuditEntity
 
 @Document
 data class Notification(
-    @Id var id: String = "",
+    @Id var id: Long = 0,
     var transactionID: String = ""
 ) : AuditEntity()
