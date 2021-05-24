@@ -77,4 +77,23 @@ class TransactionController {
         transactionService.delete(id)
     }
 
+    @PutMapping("/attach/{idtrx}/{iddetail}")
+    @ApiOperation("Attach detail")
+    fun attachDetail(
+        @PathVariable idtrx: Long,
+        @PathVariable iddetail: String
+    ): TransactionDTO {
+        return transactionMapper.asDTO(transactionService.attachDetail(idtrx, iddetail))
+    }
+
+    @PutMapping("/deattach/{idtrx}/{iddetail}")
+    @ApiOperation("deAttach detail")
+    fun deAttachDetail(
+        @PathVariable idtrx: Long,
+        @PathVariable iddetail: String
+    ): TransactionDTO {
+        return transactionMapper.asDTO(transactionService.deAttachDetail(idtrx, iddetail))
+    }
+
+
 }

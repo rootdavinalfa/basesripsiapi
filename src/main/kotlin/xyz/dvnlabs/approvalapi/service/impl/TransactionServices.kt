@@ -17,6 +17,7 @@ import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
 import xyz.dvnlabs.approvalapi.core.helper.CopyNonNullProperties
 import xyz.dvnlabs.approvalapi.dao.TransactionDAO
 import xyz.dvnlabs.approvalapi.entity.Transaction
+import xyz.dvnlabs.approvalapi.service.TransactionDetailService
 import xyz.dvnlabs.approvalapi.service.TransactionService
 
 @Service
@@ -25,6 +26,9 @@ class TransactionServices : TransactionService {
 
     @Autowired
     private lateinit var transactionDAO: TransactionDAO
+
+    @Autowired
+    private lateinit var transactionDetailService: TransactionDetailService
 
     override fun findById(id: Long): Transaction? {
         return transactionDAO
@@ -80,5 +84,54 @@ class TransactionServices : TransactionService {
             }
     }
 
+    override fun attachDetail(idTransaction: Long, idDetail: String): Transaction? {
+        val transaction = findById(idTransaction)
+        val detail = transactionDetailService.findById(idDetail)
+        transaction?.let {
+            if (it.transactionDetails.isNullOrEmpty()) {
+                it.transactionDetails = mutableListOf()
+
+                detail?.let { det ->
+                    it.transactionDetails?.add(det)
+                }
+
+            } else {
+                detail?.let { det ->
+                    it.transactionDetails?.add(det)
+                }
+            }
+        }
+
+        transaction?.let {
+            update(transaction)
+        }
+
+        return transaction
+    }
+
+    override fun deAttachDetail(idTransaction: Long, idDetail: String): Transaction? {
+        val transaction = findById(idTransaction)
+        val detail = transactionDetailService.findById(idDetail)
+        transaction?.let {
+            if (it.transactionDetails.isNullOrEmpty()) {
+                it.transactionDetails = mutableListOf()
+
+                detail?.let { det ->
+                    it.transactionDetails?.remove(det)
+                }
+
+            } else {
+                detail?.let { det ->
+                    it.transactionDetails?.remove(det)
+                }
+            }
+        }
+
+        transaction?.let {
+            update(transaction)
+        }
+
+        return transaction
+    }
 
 }

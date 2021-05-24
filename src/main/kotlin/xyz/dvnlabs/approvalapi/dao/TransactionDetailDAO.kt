@@ -6,11 +6,49 @@
 
 package xyz.dvnlabs.approvalapi.dao
 
+import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.stereotype.Repository
 import xyz.dvnlabs.approvalapi.entity.TransactionDetail
-import xyz.dvnlabs.approvalapi.entity.TransactionDetailPK
 
 @Repository
-interface TransactionDetailDAO : GenericDAO<TransactionDetail,TransactionDetailPK>{
+interface TransactionDetailDAO : GenericDAO<TransactionDetail, String> {
+
+    @Aggregation(
+        value = [
+            "{\n" +
+                    "    \$addFields: {\n" +
+                    "        createDate: {\n" +
+                    "            \$dateToString: {\n" +
+                    "                format: '%Y-%m-%d',\n" +
+                    "                date: '\$createdDate'\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}",
+            "{\n" +
+                    "    \$match: {\n" +
+                    "        createDate: ?0\n" +
+                    "    }\n" +
+                    "}",
+            "{" +
+                    "\$group: { _id: {\n" +
+                    "    \$or: [\n" +
+                    "      {\n" +
+                    "        '\$eq': ['\$_id', null]\n" +
+                    "        \n" +
+                    "      }, \n" +
+                    "      {\n" +
+                    "        '\$gt': ['\$_id', null]\n" +
+                    "        \n" +
+                    "      }\n" +
+                    "      ]\n" +
+                    "    \n" +
+                    "  } ,maxid: {\$max: '\$_id'} }" +
+                    "}"
+        ]
+    )
+    fun firstIDDesc(
+        createdDate: String?
+    ): String?
 
 }

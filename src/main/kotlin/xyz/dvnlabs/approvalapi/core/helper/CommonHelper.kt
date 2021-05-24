@@ -6,6 +6,7 @@
 
 package xyz.dvnlabs.approvalapi.core.helper
 
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.stream.Collectors
@@ -22,6 +23,14 @@ open class CommonHelper {
 
             return prefix + midfix + String.format("%0" + zeroFill + "d", max + 1)
         }
+
+        fun convertDateToStringWithPattern(date: Date?, pattern: String?): String? {
+            var pattern = pattern
+            if (pattern == null) pattern = "yyyy-MM-dd"
+            val sdf: DateFormat = SimpleDateFormat(pattern)
+            return sdf.format(date)
+        }
+
 
         fun monthToAlfabet(date: Date?): String {
             val alfaMonth = Stream.of(
@@ -64,6 +73,12 @@ open class CommonHelper {
             }
             return prefix + dateStr + strAlfaMonth + midfix + String.format("%0" + zeroFill + "d", max + 1)
         }
+
+        fun getCurrentDate(): Date? {
+            val calendar: Calendar = Calendar.getInstance()
+            return calendar.time
+        }
+
 
     }
 

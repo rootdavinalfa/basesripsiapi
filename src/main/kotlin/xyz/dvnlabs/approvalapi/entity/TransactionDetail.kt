@@ -14,7 +14,7 @@ import xyz.dvnlabs.approvalapi.core.audit.AuditEntity
 
 @Document
 data class TransactionDetail(
-    @Id var id: TransactionDetailPK = TransactionDetailPK(),
+    @Id var id: String = "",
     var detailRequest: String = "",
     @DBRef(lazy = true)
     var drug: Drugs? = null,

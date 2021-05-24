@@ -15,7 +15,7 @@ import java.util.*
 
 abstract class AuditEntity(
     @CreatedBy
-    var createdBy: String? = null,
+    var createdBy: String = "",
     @CreatedDate
     var createdDate: Date = Date(),
     @LastModifiedBy

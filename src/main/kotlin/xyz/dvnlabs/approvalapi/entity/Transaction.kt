@@ -26,5 +26,5 @@ data class Transaction(
      */
     var statusFlag : String = "1",
     var message : String = "",
-    @DBRef var transactionDetails: List<TransactionDetail>? = null
+    @DBRef var transactionDetails: MutableList<TransactionDetail>? = null
 ) : AuditEntity()
