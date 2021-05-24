@@ -8,11 +8,23 @@
 package xyz.dvnlabs.approvalapi.entity
 
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import xyz.dvnlabs.approvalapi.core.audit.AuditEntity
 
 @Document
 data class Transaction(
     @Id var idTransaction: Long = 0,
-    var transactionName: String = ""
+    var transactionName: String = "",
+    /**
+     * Status flag
+     * 1 = OPEN
+     * 2 = ON PROGRESS WAREHOUSE
+     * 3 = ON DELIVERY
+     * 4 = DELIVERED
+     * 5 = REJECTED
+     */
+    var statusFlag : String = "1",
+    var message : String = "",
+    @DBRef var transactionDetails: MutableList<TransactionDetail>? = null
 ) : AuditEntity()
