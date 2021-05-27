@@ -28,7 +28,9 @@ import xyz.dvnlabs.approvalapi.dto.LoginRequest
 import xyz.dvnlabs.approvalapi.dto.UserLoginResponse
 import xyz.dvnlabs.approvalapi.dto.UserRegister
 import xyz.dvnlabs.approvalapi.entity.Role
+import xyz.dvnlabs.approvalapi.entity.Unit
 import xyz.dvnlabs.approvalapi.entity.User
+import xyz.dvnlabs.approvalapi.service.UnitService
 import xyz.dvnlabs.approvalapi.service.UserService
 import java.util.*
 
@@ -41,6 +43,9 @@ class UserServices : UserService {
 
     @Autowired
     private lateinit var roleDAO: RoleDAO
+
+    @Autowired
+    private lateinit var unitService: UnitService
 
     @Autowired
     private lateinit var passwordEncoder: PasswordEncoder
@@ -187,6 +192,51 @@ class UserServices : UserService {
         return userDAO.findById(id).map { rowExist ->
             userDAO.deleteById(rowExist.id)
         }.orElseThrow { ResourceNotFoundException("Data user tidak ditemukan") }
+    }
+
+    override fun attachUnit(unitID: String, userid: String): User? {
+        val user = findById(userid)
+        user?.let {
+            it.units = if (it.units.isNullOrEmpty()) {
+                val unit = emptyList<Unit>().toMutableList()
+                unitService.findById(unitID)
+                    ?.let { unt ->
+                        unit.add(unt)
+                    }
+                unit
+            } else {
+                val unit = it.units?.toMutableList()
+                unitService.findById(unitID)
+                    ?.let { unt ->
+                        unit?.add(unt)
+                    }
+                unit
+            }
+        }
+
+        return user
+    }
+
+    override fun deAttachUnit(unitID: String, userid: String): User? {
+        val user = findById(userid)
+        user?.let {
+            it.units = if (it.units.isNullOrEmpty()) {
+                val unit = emptyList<Unit>().toMutableList()
+                unitService.findById(unitID)
+                    ?.let { unt ->
+                        unit.remove(unt)
+                    }
+                unit
+            } else {
+                val unit = it.units?.toMutableList()
+                unitService.findById(unitID)
+                    ?.let { unt ->
+                        unit?.remove(unt)
+                    }
+                unit
+            }
+        }
+        return user
     }
 
 }

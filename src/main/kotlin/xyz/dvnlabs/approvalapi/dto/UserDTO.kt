@@ -15,5 +15,6 @@ data class UserDTO(
     var userName: String = "",
     var password: String = "",
     var registeredOn: Date = Date(),
-    var roles: List<Role>? = null
+    var roles: List<Role>? = null,
+    var units: List<Unit>? = null
 )

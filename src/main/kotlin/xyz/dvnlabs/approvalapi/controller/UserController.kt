@@ -52,6 +52,24 @@ class UserController {
         return userMapper.asUserNoPasswordDTO(userService.revokeRole(roleid, userid))
     }
 
+    @PostMapping("/attach-unit/{userid}/{unitid}")
+    @ApiOperation("Attach Unit")
+    fun attachUnit(
+        @PathVariable userid: String,
+        @PathVariable unitid: String
+    ): UserNoPasswordDTO {
+        return userMapper.asUserNoPasswordDTO(userService.attachUnit(unitid, userid)!!)
+    }
+
+    @PostMapping("/revoke-unit/{userid}/{unitid}")
+    @ApiOperation("Revoke Unit")
+    fun revokeUnit(
+        @PathVariable userid: String,
+        @PathVariable unitid: String
+    ): UserNoPasswordDTO {
+        return userMapper.asUserNoPasswordDTO(userService.deAttachUnit(unitid, userid)!!)
+    }
+
     @PutMapping("/{id}")
     @ApiOperation("Update")
     fun update(
