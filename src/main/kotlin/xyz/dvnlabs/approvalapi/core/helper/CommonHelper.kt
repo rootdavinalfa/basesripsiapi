@@ -25,9 +25,8 @@ open class CommonHelper {
         }
 
         fun convertDateToStringWithPattern(date: Date?, pattern: String?): String? {
-            var pattern = pattern
-            if (pattern == null) pattern = "yyyy-MM-dd"
-            val sdf: DateFormat = SimpleDateFormat(pattern)
+            val newPattern = pattern ?: "yyyy-MM-dd"
+            val sdf: DateFormat = SimpleDateFormat(newPattern)
             return sdf.format(date)
         }
 

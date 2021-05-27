@@ -28,5 +28,7 @@ data class User(
     var registeredOn: Date = Date(),
     @Field
     @DBRef(lazy = true)
-    var roles: List<Role>? = null
+    var roles: List<Role>? = null,
+    @DBRef(lazy = true)
+    var units: List<Unit>? = null
 )

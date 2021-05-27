@@ -7,6 +7,7 @@
 package xyz.dvnlabs.approvalapi.dto
 
 import xyz.dvnlabs.approvalapi.entity.Role
+import xyz.dvnlabs.approvalapi.entity.Unit
 import java.util.*
 
 data class UserDTO(
@@ -15,5 +16,6 @@ data class UserDTO(
     var userName: String = "",
     var password: String = "",
     var registeredOn: Date = Date(),
-    var roles: List<Role>? = null
+    var roles: List<Role>? = null,
+    var units: List<Unit>? = null
 )
