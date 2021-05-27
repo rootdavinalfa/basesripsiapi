@@ -7,6 +7,7 @@
 package xyz.dvnlabs.approvalapi.dto
 
 import xyz.dvnlabs.approvalapi.entity.Role
+import xyz.dvnlabs.approvalapi.entity.Unit
 import java.util.*
 
 data class UserDTO(
