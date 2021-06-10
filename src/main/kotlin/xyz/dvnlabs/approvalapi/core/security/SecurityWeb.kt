@@ -65,6 +65,9 @@ class SecurityWeb : WebSecurityConfigurerAdapter() {
             ?.antMatchers("/webjars/**")?.permitAll()
             ?.antMatchers("/swagger-ui/**")?.permitAll()
             ?.antMatchers("/auth/**")?.permitAll()
+            ?.antMatchers("/topic/**")?.permitAll()
+            ?.antMatchers("/app/**")?.permitAll()
+            ?.antMatchers("/live/**")?.permitAll()
             ?.anyRequest()
             ?.authenticated()
 
