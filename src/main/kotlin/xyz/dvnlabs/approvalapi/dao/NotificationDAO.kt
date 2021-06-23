@@ -1,17 +1,19 @@
 /*
  * Copyright (c) 2021.
- * Davin Alfarizky Putra Basudewa <dbasudewa@gmail.com>
- * Skripshit API
+ * Davin Alfarizky Putra Basudewa
+ * Skripsi BaseAPI
+ * Educational Purposes & Reference Only
  */
 
 package xyz.dvnlabs.approvalapi.dao
 
 import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.stereotype.Repository
-import xyz.dvnlabs.approvalapi.entity.Employee
+import xyz.dvnlabs.approvalapi.entity.Notification
 
 @Repository
-interface EmployeeDAO : GenericDAO<Employee, String>, SpecificationRepository<Employee> {
+interface NotificationDAO : GenericDAO<Notification, String> {
+
     @Aggregation(
         "{" +
                 "\$group: { _id: {\n" +
@@ -31,4 +33,5 @@ interface EmployeeDAO : GenericDAO<Employee, String>, SpecificationRepository<Em
     )
             /*@Aggregation("{ \$limit: 1 , \$sort: {_id : -1}}")*/
     fun firstIDDesc(): String?
+
 }

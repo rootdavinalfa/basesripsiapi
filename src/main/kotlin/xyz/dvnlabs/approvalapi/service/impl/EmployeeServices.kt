@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
@@ -86,14 +87,23 @@ class EmployeeServices : EmployeeService {
 
     override fun getEmployeeByNameOrPlacement(name: String, placement: String): List<Employee>? {
 
-        return mongoTemplate.find(
+        return employeeDAO.findAllQuery(
             QueryHelper()
                 .addOne("employeeName", name, QueryOperation.MATCH_ANY)
                 .addOne("placement", placement, QueryOperation.MATCH_ANY)
                 .or()
-                .buildQuery(), Employee::class.java
+                .buildQuery(),
+            Employee::class.java
         )
 
+    }
+
+    override fun findAllPageWithQuery(pageable: Pageable, query: Query): Page<Employee> {
+        return employeeDAO.findAllQueryPage(
+            query,
+            pageable,
+            Employee::class.java
+        )
     }
 
     override fun attachUser(id: String, userName: String, employeeID: String): Employee {

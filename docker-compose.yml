@@ -1,7 +1,7 @@
 version: '2'
 services:
   dvn-backend:
-    image: dvn/backend:latest
+    image: rootdavinalfa/basesripsiapi:latest
     build:
       dockerfile: Dockerfile
       context: ./

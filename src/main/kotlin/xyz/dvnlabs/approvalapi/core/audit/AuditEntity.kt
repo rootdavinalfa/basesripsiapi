@@ -13,7 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate
 import java.util.*
 
 
-abstract class AuditEntity(
+open class AuditEntity(
     @CreatedBy
     var createdBy: String = "",
     @CreatedDate
