@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 import xyz.dvnlabs.approvalapi.core.exception.InvalidRequestException
+import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
+import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.entity.Employee
 import xyz.dvnlabs.approvalapi.service.EmployeeService
 
@@ -90,8 +92,19 @@ class EmployeeController {
 
     @GetMapping("/page")
     @ApiOperation("Page")
-    fun listPage(pageable: Pageable): Page<Employee> {
-        return employeeService.findAllPage(pageable)
+    fun listPage(
+        pageable: Pageable,
+        @RequestParam(defaultValue = "") name: String,
+        @RequestParam(defaultValue = "") placement: String
+    ): Page<Employee> {
+        return employeeService.findAllPageWithQuery(
+            pageable,
+            QueryHelper()
+                .addOne("employeeName", name, QueryOperation.MATCH_ANY)
+                .addOne("placement", placement, QueryOperation.MATCH_ANY)
+                .or()
+                .buildQuery()
+        )
     }
 
     @DeleteMapping("/{id}")

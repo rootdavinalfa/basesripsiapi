@@ -24,7 +24,10 @@ data class Transaction(
      * 4 = DELIVERED
      * 5 = REJECTED
      */
-    var statusFlag : String = "1",
-    var message : String = "",
-    @DBRef var transactionDetails: MutableList<TransactionDetail>? = null
+    var statusFlag: String = "1",
+    var message: String = "",
+    @DBRef var transactionDetails: MutableList<TransactionDetail>? = null,
+    @DBRef var userRequest: User? = null,
+    @DBRef var userApprove: User? = null,
+    @DBRef var userDelivery: User? = null,
 ) : AuditEntity()

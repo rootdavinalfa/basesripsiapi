@@ -8,14 +8,12 @@ package xyz.dvnlabs.approvalapi.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.handler.annotation.MessageMapping
-import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.messaging.simp.annotation.SendToUser
+import org.springframework.messaging.simp.annotation.SubscribeMapping
 import org.springframework.stereotype.Controller
 import xyz.dvnlabs.approvalapi.dto.TestDTO
-import xyz.dvnlabs.approvalapi.dto.UserDTO
-import java.security.Principal
 
 @Controller
 class WebsocketController {
@@ -38,6 +36,11 @@ class WebsocketController {
         return TestDTO(
             username = headerAccessor.user?.name!!
         )
+    }
+
+    @SubscribeMapping("/topic/notification")
+    fun notification(headerAccessor: SimpMessageHeaderAccessor) {
+
     }
 
 }
