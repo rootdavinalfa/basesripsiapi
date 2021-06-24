@@ -31,6 +31,9 @@ class TransactionDetailServices : TransactionDetailService {
     @Autowired
     private lateinit var transactionDetailDAO: TransactionDetailDAO
 
+    @Autowired
+    private lateinit var drugsServices: DrugsServices
+
     override fun findById(id: String): TransactionDetail? {
         return transactionDetailDAO
             .findById(id)
@@ -51,10 +54,18 @@ class TransactionDetailServices : TransactionDetailService {
                 } ?: "XXXXXXXXX000000", CommonHelper.getCurrentDate(), "TRX", "", 6, false, "yyMMdd"
         )
 
+        entity.drug?.let {
+            val drugs = drugsServices.findById(it.idDrug)
+            entity.drug = drugs
+
+        } ?: kotlin.run {
+            throw ResourceNotFoundException(serviceName = "Drugs not found", identifier = entity.drug?.idDrug)
+        }
 
         if (existById(entity.id)) {
             throw ResourceExistsException("$SERVICE_NAME is exist!")
         }
+
         return transactionDetailDAO.save(entity)
     }
 

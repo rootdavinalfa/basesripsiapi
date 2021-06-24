@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import xyz.dvnlabs.approvalapi.dto.RequestTransactionDTO
 import xyz.dvnlabs.approvalapi.dto.TransactionDTO
+import xyz.dvnlabs.approvalapi.mapper.TransactionDetailMapper
 import xyz.dvnlabs.approvalapi.mapper.TransactionMapper
 import xyz.dvnlabs.approvalapi.service.TransactionService
 
@@ -27,6 +29,9 @@ class TransactionController {
 
     @Autowired
     private lateinit var transactionMapper: TransactionMapper
+
+    @Autowired
+    private lateinit var transactionDetailMapper: TransactionDetailMapper
 
     @GetMapping("/{id}")
     @ApiOperation("Find by id")
@@ -95,5 +100,14 @@ class TransactionController {
         return transactionMapper.asDTO(transactionService.deAttachDetail(idtrx, iddetail))
     }
 
+    @PostMapping("/create/transaction")
+    @ApiOperation("Create Transaction")
+    fun createTransaction(
+        @RequestBody request: RequestTransactionDTO
+    ): TransactionDTO {
+        val transaction = transactionMapper.asEntity(request.transactionDTO)
+        val transactionDetail = transactionDetailMapper.asEntityList(request.transactionDetails)
+        return transactionMapper.asDTO(transactionService.createTransaction(transaction, transactionDetail))
+    }
 
 }

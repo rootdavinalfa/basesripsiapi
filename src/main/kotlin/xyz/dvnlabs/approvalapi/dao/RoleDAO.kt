@@ -14,4 +14,6 @@ interface RoleDAO : GenericDAO<Role, Int> {
 
     fun existsByRoleName(name: String): Boolean
 
+    fun findByRoleName(roleName: String): Role?
+
 }

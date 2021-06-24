@@ -8,11 +8,17 @@
 package xyz.dvnlabs.approvalapi.service
 
 import xyz.dvnlabs.approvalapi.entity.Transaction
+import xyz.dvnlabs.approvalapi.entity.TransactionDetail
 
-interface TransactionService : GenericService<Transaction,Long>{
+interface TransactionService : GenericService<Transaction, Long> {
 
-    fun attachDetail(idTransaction : Long, idDetail : String) : Transaction?
+    fun attachDetail(idTransaction: Long, idDetail: String): Transaction?
 
-    fun deAttachDetail(idTransaction : Long, idDetail : String) : Transaction?
+    fun deAttachDetail(idTransaction: Long, idDetail: String): Transaction?
+
+    fun createTransaction(
+        transactionDTO: Transaction,
+        transactionDetails: List<TransactionDetail>?
+    ): Transaction?
 
 }

@@ -8,8 +8,10 @@
 package xyz.dvnlabs.approvalapi.entity
 
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import xyz.dvnlabs.approvalapi.core.audit.AuditEntity
+import xyz.dvnlabs.approvalapi.dto.TargetKind
 
 @Document
 data class Notification(
@@ -17,6 +19,8 @@ data class Notification(
     var id: String = "",
     var title: String = "",
     var body: String = "",
+    var sender: String = "",
+    var target: String = "",
     /**
      * NOTIFICATION FLAG
      *
@@ -25,5 +29,5 @@ data class Notification(
      * 1 = Published Read
      */
     var flag: String = "0",
-    var idTransaction: Long = 0
+    @DBRef var transaction: Transaction? = null
 ) : AuditEntity()

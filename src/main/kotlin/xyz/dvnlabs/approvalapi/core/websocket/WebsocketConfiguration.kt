@@ -70,7 +70,7 @@ class WebsocketConfiguration : WebSocketMessageBrokerConfigurer {
     }
 
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
-        registry.enableSimpleBroker("/topic")
+        registry.enableSimpleBroker("/topic", "/queue")
         registry.setApplicationDestinationPrefixes("/app")
         registry.setUserDestinationPrefix("/user")
     }
@@ -82,7 +82,6 @@ class WebsocketConfiguration : WebSocketMessageBrokerConfigurer {
                 if (StompCommand.CONNECT == accessor!!.command) {
                     val authorization = accessor.getNativeHeader("Authorization")
                     val accessToken = authorization!![0].split(" ").toTypedArray()[1]
-                    println(accessToken)
                     val usernameJwt = jwtUtils.getUsernameFromToken(accessToken)
                     val userDetails = userService.loadUserByUsername(usernameJwt)
                     val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)

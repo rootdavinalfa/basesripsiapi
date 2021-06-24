@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 import xyz.dvnlabs.approvalapi.entity.Drugs
 
 @Repository
-interface DrugDAO : GenericDAO<Drugs, Long> {
+interface DrugDAO : GenericDAO<Drugs, Long>, SpecificationRepository<Drugs> {
 
     fun findFirstByOrderByIdDrugDesc(): Drugs?
 

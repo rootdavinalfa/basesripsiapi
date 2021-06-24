@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
+import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.dto.DrugsDTO
 import xyz.dvnlabs.approvalapi.mapper.DrugsMapper
 import xyz.dvnlabs.approvalapi.service.DrugsService
@@ -64,8 +66,19 @@ class DrugController {
 
     @GetMapping("/page")
     @ApiOperation("Page")
-    fun listPage(pageable: Pageable): Page<DrugsDTO> {
-        return drugsService.findAllPage(pageable).map {
+    fun listPage(
+        pageable: Pageable,
+        @RequestParam(defaultValue = "") drugname: String,
+        @RequestParam(defaultValue = "") classified: String
+    ): Page<DrugsDTO> {
+        return drugsService.findAllPageWithQuery(
+            pageable,
+            QueryHelper()
+                .addOne("drugName", drugname, QueryOperation.MATCH_ANY, true)
+                .addOne("classified", classified, QueryOperation.MATCH_ANY, true)
+                .or()
+                .buildQuery()
+        ).map {
             return@map drugMapper.asDTO(it)
         }
     }

@@ -9,6 +9,7 @@ package xyz.dvnlabs.approvalapi.service.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
@@ -237,6 +238,18 @@ class UserServices : UserService {
             }
         }
         return user
+    }
+
+    override fun existById(id: String): Boolean {
+        return userDAO.existsById(id)
+    }
+
+    override fun isInitialized(): Boolean {
+        return userDAO.count() > 0
+    }
+
+    override fun findAllWithQuery(query: Query): List<User> {
+        return userDAO.findAllQuery(query, User::class.java)
     }
 
 }

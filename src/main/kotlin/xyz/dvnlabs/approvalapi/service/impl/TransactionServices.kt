@@ -12,11 +12,16 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import xyz.dvnlabs.approvalapi.core.bus.RxBus
 import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
 import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
 import xyz.dvnlabs.approvalapi.core.helper.CopyNonNullProperties
+import xyz.dvnlabs.approvalapi.core.helper.GlobalContext
 import xyz.dvnlabs.approvalapi.dao.TransactionDAO
+import xyz.dvnlabs.approvalapi.dto.NotificationSenderDTO
+import xyz.dvnlabs.approvalapi.dto.TargetKind
 import xyz.dvnlabs.approvalapi.entity.Transaction
+import xyz.dvnlabs.approvalapi.entity.TransactionDetail
 import xyz.dvnlabs.approvalapi.service.TransactionDetailService
 import xyz.dvnlabs.approvalapi.service.TransactionService
 
@@ -131,6 +136,33 @@ class TransactionServices : TransactionService {
             update(transaction)
         }
 
+        return transaction
+    }
+
+    override fun createTransaction(
+        transactionDTO: Transaction,
+        transactionDetails: List<TransactionDetail>?
+    ): Transaction? {
+        println("Transaction Begin")
+        transactionDTO.userRequest = GlobalContext.getUsername()
+        transactionDetails?.forEach {
+            transactionDTO.transactionDetails = mutableListOf()
+            transactionDTO.transactionDetails?.add(transactionDetailService.save(it))
+            println(transactionDTO.transactionDetails)
+        }
+        val transaction = save(transactionDTO)
+
+        RxBus
+            .publish(
+                NotificationSenderDTO(
+                    userNameSender = GlobalContext.getUsername(),
+                    target = "ROLE_GUDANG",
+                    targetKind = TargetKind.ROLE,
+                    title = "Permintaan Barang Baru",
+                    body = "Ada permintaan barang baru oleh: ${GlobalContext.getUsername()} silahkan dicek!",
+                    data = transaction
+                )
+            )
         return transaction
     }
 

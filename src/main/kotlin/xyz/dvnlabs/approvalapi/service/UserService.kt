@@ -27,4 +27,6 @@ interface UserService : GenericService<User, String>, UserDetailsService {
 
     fun deAttachUnit(unitID: String, userid: String): User?
 
+    fun isInitialized() : Boolean
+
 }

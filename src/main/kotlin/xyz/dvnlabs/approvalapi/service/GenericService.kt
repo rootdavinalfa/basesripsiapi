@@ -26,6 +26,10 @@ interface GenericService<E, ID> {
         return Page.empty()
     }
 
+    fun findAllWithQuery(query: Query): List<E>{
+        return emptyList()
+    }
+
     fun delete(id: ID)
 
     fun existById(id: ID): Boolean {

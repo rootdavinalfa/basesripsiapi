@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import xyz.dvnlabs.approvalapi.core.exception.InvalidRequestException
+import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
+import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.dto.NotificationDTO
 import xyz.dvnlabs.approvalapi.mapper.NotificationMapper
 import xyz.dvnlabs.approvalapi.service.NotificationService
@@ -65,8 +68,16 @@ class NotificationController {
 
     @GetMapping("/page")
     @ApiOperation("Page")
-    fun listPage(pageable: Pageable): Page<NotificationDTO> {
-        return notificationService.findAllPage(pageable).map {
+    fun listPage(
+        pageable: Pageable,
+        @RequestParam(defaultValue = "") target: String
+    ): Page<NotificationDTO> {
+        return notificationService.findAllPageWithQuery(
+            pageable, QueryHelper()
+                .addOne("target", target, QueryOperation.EQUAL)
+                .and()
+                .buildQuery()
+        ).map {
             return@map notificationMapper.asDTO(it)
         }
     }
@@ -75,6 +86,27 @@ class NotificationController {
     @ApiOperation("Delete")
     fun delete(@PathVariable id: String) {
         notificationService.delete(id)
+    }
+
+    @PutMapping("/attach/{id}")
+    @ApiOperation("Update")
+    fun attachTransaction(
+        @PathVariable id: String,
+        @RequestParam(required = false) idTransaction: Long?
+    ): NotificationDTO {
+        if (idTransaction == null) {
+            throw InvalidRequestException("Id transaction is required!")
+        }
+        return notificationMapper.asDTO(notificationService.attachTransaction(idTransaction, id))
+    }
+
+    @PutMapping("/detach/{id}")
+    @ApiOperation("Update")
+    fun detachTransaction(
+        @PathVariable id: String
+    ): NotificationDTO {
+
+        return notificationMapper.asDTO(notificationService.detachTransaction(id))
     }
 
 }

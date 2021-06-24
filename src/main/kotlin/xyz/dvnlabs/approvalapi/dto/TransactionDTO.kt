@@ -16,7 +16,7 @@ data class TransactionDTO(
     var statusFlag: String = "1",
     var message: String = "",
     var transactionDetails: List<TransactionDetail>? = null,
-    var userRequest: User? = null,
-    var userApprove: User? = null,
-    var userDelivery: User? = null,
+    var userRequest: String? = null,
+    var userApprove: String? = null,
+    var userDelivery: String? = null,
 ) : AuditDTO()

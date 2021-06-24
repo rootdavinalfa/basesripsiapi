@@ -12,14 +12,20 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.messaging.simp.annotation.SendToUser
 import org.springframework.messaging.simp.annotation.SubscribeMapping
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.stereotype.Controller
 import xyz.dvnlabs.approvalapi.dto.TestDTO
+import xyz.dvnlabs.approvalapi.entity.Notification
+import xyz.dvnlabs.approvalapi.service.NotificationService
 
 @Controller
 class WebsocketController {
 
     @Autowired
     private lateinit var simpMessagingTemplate: SimpMessagingTemplate
+
+    @Autowired
+    private lateinit var notificationService: NotificationService
 
     /**
      * WEBSOCKET ENDPOINT FOR TESTING
@@ -30,7 +36,7 @@ class WebsocketController {
     @SendToUser("/topic/global-message/tick")
     @MessageMapping("/from-client")
     @Throws(Exception::class)
-    fun fromClient(content: String, headerAccessor: SimpMessageHeaderAccessor): TestDTO {
+    fun fromClient(content: String, headerAccessor: StompHeaderAccessor): TestDTO {
         //log.info("Message from client: {}", content);
 
         return TestDTO(
@@ -38,9 +44,13 @@ class WebsocketController {
         )
     }
 
-    @SubscribeMapping("/topic/notification")
-    fun notification(headerAccessor: SimpMessageHeaderAccessor) {
-
+    @SubscribeMapping("/queue/notification")
+    fun notification(headerAccessor: StompHeaderAccessor): List<Notification> {
+        println("Notification")
+        headerAccessor.user?.let {
+            return notificationService.listenTransaction(null, it.name, null)
+        }
+        return emptyList()
     }
 
 }
