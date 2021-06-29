@@ -9,6 +9,7 @@ package xyz.dvnlabs.approvalapi.service.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
@@ -69,9 +70,17 @@ class DrugsServices : DrugsService {
         return drugDAO.findAll(pageable)
     }
 
+    override fun findAllPageWithQuery(pageable: Pageable, query: Query): Page<Drugs> {
+        return drugDAO.findAllQueryPage(query, pageable, Drugs::class.java)
+    }
+
     override fun delete(id: Long) {
         return drugDAO.findById(id).map { rowExist ->
             drugDAO.deleteById(rowExist.idDrug)
         }.orElseThrow { ResourceNotFoundException("$SERVICE_NAME not found!") }
+    }
+
+    override fun isInitialized(): Boolean {
+        return drugDAO.count() > 0
     }
 }

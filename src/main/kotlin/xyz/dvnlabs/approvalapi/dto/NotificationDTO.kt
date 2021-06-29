@@ -7,11 +7,15 @@
 
 package xyz.dvnlabs.approvalapi.dto
 
+import xyz.dvnlabs.approvalapi.entity.Transaction
+
 
 data class NotificationDTO(
     var id: String = "",
     var title: String = "",
     var body: String = "",
+    var sender: String = "",
+    var target: String = "",
     /**
      * NOTIFICATION FLAG
      *
@@ -20,5 +24,5 @@ data class NotificationDTO(
      * 1 = Published Read
      */
     var flag: String = "0",
-    var idTransaction: Long = 0
+    var transaction: Transaction? = null
 ) : AuditDTO()

@@ -10,4 +10,5 @@ import xyz.dvnlabs.approvalapi.entity.Role
 import java.math.BigInteger
 
 interface RoleService : GenericService<Role, Int> {
+    fun getRoleByName(name :String) : Role?
 }

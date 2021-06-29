@@ -26,8 +26,8 @@ data class Transaction(
      */
     var statusFlag: String = "1",
     var message: String = "",
-    @DBRef var transactionDetails: MutableList<TransactionDetail>? = null,
-    @DBRef var userRequest: User? = null,
-    @DBRef var userApprove: User? = null,
-    @DBRef var userDelivery: User? = null,
+    @DBRef(lazy = true) var transactionDetails: MutableList<TransactionDetail>? = null,
+    var userRequest: String? = null,
+    var userApprove: String? = null,
+    var userDelivery: String? = null,
 ) : AuditEntity()

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 import xyz.dvnlabs.approvalapi.entity.User
 
 @Repository
-interface UserDAO : GenericDAO<User, String> {
+interface UserDAO : GenericDAO<User, String>, SpecificationRepository<User> {
 
     fun findByUserName(userName: String): User?
 

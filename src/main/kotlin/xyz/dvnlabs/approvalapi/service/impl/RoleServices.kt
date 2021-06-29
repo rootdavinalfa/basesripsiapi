@@ -16,7 +16,6 @@ import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
 import xyz.dvnlabs.approvalapi.dao.RoleDAO
 import xyz.dvnlabs.approvalapi.entity.Role
 import xyz.dvnlabs.approvalapi.service.RoleService
-import java.util.*
 
 @Service
 @Transactional
@@ -66,5 +65,13 @@ class RoleServices : RoleService {
         return roleDAO.findById(id).map { rowExist ->
             roleDAO.deleteById(rowExist.id)
         }.orElseThrow { ResourceNotFoundException("Role not found") }
+    }
+
+    override fun existById(id: Int): Boolean {
+        return roleDAO.existsById(id)
+    }
+
+    override fun getRoleByName(name: String): Role? {
+        return roleDAO.findByRoleName(name)
     }
 }

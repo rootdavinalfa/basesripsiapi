@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository
 import xyz.dvnlabs.approvalapi.entity.Notification
 
 @Repository
-interface NotificationDAO : GenericDAO<Notification, String> {
+interface NotificationDAO : GenericDAO<Notification, String>, SpecificationRepository<Notification> {
 
     @Aggregation(
         "{" +

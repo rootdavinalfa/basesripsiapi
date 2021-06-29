@@ -9,4 +9,7 @@ package xyz.dvnlabs.approvalapi.service
 import xyz.dvnlabs.approvalapi.entity.Drugs
 
 interface DrugsService : GenericService<Drugs,Long> {
+
+    fun isInitialized() : Boolean
+
 }
