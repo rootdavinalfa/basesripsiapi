@@ -17,13 +17,18 @@ import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
 import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
 import xyz.dvnlabs.approvalapi.core.helper.CopyNonNullProperties
 import xyz.dvnlabs.approvalapi.core.helper.GlobalContext
+import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
+import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.dao.TransactionDAO
 import xyz.dvnlabs.approvalapi.dto.NotificationSenderDTO
 import xyz.dvnlabs.approvalapi.dto.TargetKind
+import xyz.dvnlabs.approvalapi.entity.Role
 import xyz.dvnlabs.approvalapi.entity.Transaction
 import xyz.dvnlabs.approvalapi.entity.TransactionDetail
+import xyz.dvnlabs.approvalapi.service.RoleService
 import xyz.dvnlabs.approvalapi.service.TransactionDetailService
 import xyz.dvnlabs.approvalapi.service.TransactionService
+import xyz.dvnlabs.approvalapi.service.UserService
 
 @Service
 @Transactional(rollbackFor = [Exception::class])
@@ -34,6 +39,12 @@ class TransactionServices : TransactionService {
 
     @Autowired
     private lateinit var transactionDetailService: TransactionDetailService
+
+    @Autowired
+    private lateinit var userService: UserService
+
+    @Autowired
+    private lateinit var roleService: RoleService
 
     override fun findById(id: Long): Transaction? {
         return transactionDAO
@@ -156,7 +167,7 @@ class TransactionServices : TransactionService {
             .publish(
                 NotificationSenderDTO(
                     userNameSender = GlobalContext.getUsername(),
-                    target = "ROLE_GUDANG",
+                    target = "ROLE_VGUDANG",
                     targetKind = TargetKind.ROLE,
                     title = "Permintaan Barang Baru",
                     body = "Ada permintaan barang baru oleh: ${GlobalContext.getUsername()} silahkan dicek!",
@@ -164,6 +175,83 @@ class TransactionServices : TransactionService {
                 )
             )
         return transaction
+    }
+
+    override fun validationTransaction(idTransaction: Long): Transaction? {
+        return roleService.getRoleByName("ROLE_VGUDANG")
+            ?.let { role ->
+
+                val user = userService.findAllWithQuery(
+                    QueryHelper()
+                        .addOne("roles", Role(id = role.id), QueryOperation.EQUAL)
+                        .and()
+                        .buildQuery()
+                ).find { usr -> usr.userName == GlobalContext.getUsername() }
+                    ?: throw ResourceNotFoundException("User login role not qualified, user must have ${role.roleName}")
+
+                val transaction = findById(idTransaction)
+                transaction?.statusFlag = "2"
+                transaction?.userApprove = user.userName
+
+
+                if (transaction != null) {
+                    RxBus
+                        .publish(
+                            NotificationSenderDTO(
+                                userNameSender = GlobalContext.getUsername(),
+                                target = transaction.userRequest!!,
+                                targetKind = TargetKind.INDIVIDUAL,
+                                title = "Permintaan sudah divalidasi",
+                                body = "Permintaan untuk ID:${transaction.idTransaction} sudah divalidasi oleh ${transaction.userApprove}",
+                                data = transaction
+                            )
+                        )
+
+                    return@let update(transaction)
+                }
+                return@let null
+
+            }
+    }
+
+    override fun attachDelivery(idTransaction: Long, idUser: String): Transaction? {
+        return roleService.getRoleByName("ROLE_GUDANG")
+            ?.let { role ->
+                val user = userService.findAllWithQuery(
+                    QueryHelper()
+                        .addOne("roles", Role(id = role.id), QueryOperation.EQUAL)
+                        .and()
+                        .buildQuery()
+                ).find { usr -> usr.userName == GlobalContext.getUsername() }
+                    ?: throw ResourceNotFoundException("User login role not qualified, user must have ${role.roleName}")
+
+                val transaction = findById(idTransaction)
+                transaction?.statusFlag?.let {
+                    if (it != "2")
+                        throw ResourceNotFoundException("Transaction not validated, please validate first before attach delivery")
+                }
+                transaction?.statusFlag = "3"
+                transaction?.userDelivery = user.userName
+
+                if (transaction != null) {
+
+                    RxBus
+                        .publish(
+                            NotificationSenderDTO(
+                                userNameSender = GlobalContext.getUsername(),
+                                target = transaction.userDelivery!!,
+                                targetKind = TargetKind.INDIVIDUAL,
+                                title = "Silahkan antar permintaan barang berikut",
+                                body = "Permintaan untuk ID:${transaction.idTransaction} harus diantar ke: ${transaction.userRequest}",
+                                data = transaction
+                            )
+                        )
+
+                    return@let update(transaction)
+                }
+                return@let null
+
+            }
     }
 
 }

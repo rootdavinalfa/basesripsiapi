@@ -48,6 +48,13 @@ class DataInitialization : ApplicationListener<ContextRefreshedEvent> {
             )
         )
 
+        // Create Role Gudang
+        val roleValidasiGudang = roleService.save(
+            Role(
+                roleName = "ROLE_VGUDANG"
+            )
+        )
+
         // Create Role ADMIN
         val roleAdmin = roleService.save(
             Role(
@@ -88,6 +95,16 @@ class DataInitialization : ApplicationListener<ContextRefreshedEvent> {
             )
         )
         userService.attachRole(roleGudang.id, gudang.id)
+
+        // Create user validasi gudang
+        val validasiGudang = userService.register(
+            UserRegister(
+                email = "vgudang@gudang.com",
+                userName = "vgudang",
+                password = "123456"
+            )
+        )
+        userService.attachRole(roleValidasiGudang.id, validasiGudang.id)
 
         // Create user apotik
         val apotik = userService.register(

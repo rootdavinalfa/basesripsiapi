@@ -21,4 +21,12 @@ interface TransactionService : GenericService<Transaction, Long> {
         transactionDetails: List<TransactionDetail>?
     ): Transaction?
 
+    fun validationTransaction(
+        idTransaction: Long
+    ): Transaction?
+
+    fun attachDelivery(
+        idTransaction: Long,
+        idUser : String
+    ): Transaction?
 }

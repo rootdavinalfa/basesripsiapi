@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
+import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.dto.RequestTransactionDTO
 import xyz.dvnlabs.approvalapi.dto.TransactionDTO
 import xyz.dvnlabs.approvalapi.mapper.TransactionDetailMapper
@@ -70,8 +72,17 @@ class TransactionController {
 
     @GetMapping("/page")
     @ApiOperation("Page")
-    fun listPage(pageable: Pageable): Page<TransactionDTO> {
-        return transactionService.findAllPage(pageable).map {
+    fun listPage(
+        pageable: Pageable,
+        @RequestParam(defaultValue = "") statusFlag: String
+    ): Page<TransactionDTO> {
+        return transactionService.findAllPageWithQuery(
+            pageable,
+            QueryHelper()
+                .addOne("statusFlag", statusFlag, QueryOperation.EQUAL)
+                .or()
+                .buildQuery()
+        ).map {
             return@map transactionMapper.asDTO(it)
         }
     }
@@ -100,7 +111,7 @@ class TransactionController {
         return transactionMapper.asDTO(transactionService.deAttachDetail(idtrx, iddetail))
     }
 
-    @PostMapping("/create/transaction")
+    @PostMapping("/create")
     @ApiOperation("Create Transaction")
     fun createTransaction(
         @RequestBody request: RequestTransactionDTO
@@ -108,6 +119,29 @@ class TransactionController {
         val transaction = transactionMapper.asEntity(request.transactionDTO)
         val transactionDetail = transactionDetailMapper.asEntityList(request.transactionDetails)
         return transactionMapper.asDTO(transactionService.createTransaction(transaction, transactionDetail))
+    }
+
+    @PutMapping("/validate/{idTransaction}")
+    @ApiOperation("Validate Transaction")
+    fun validateTransaction(
+        @PathVariable idTransaction: Long
+    ): TransactionDTO {
+        return transactionMapper
+            .asDTO(
+                transactionService.validationTransaction(idTransaction)
+            )
+    }
+
+    @PutMapping("/attach-delivery/{idTransaction}/{iduser}")
+    @ApiOperation("Attach delivery Transaction")
+    fun attachDeliveryTransaction(
+        @PathVariable idTransaction: Long,
+        @PathVariable iduser: String
+    ): TransactionDTO {
+        return transactionMapper
+            .asDTO(
+                transactionService.attachDelivery(idTransaction, iduser)
+            )
     }
 
 }
