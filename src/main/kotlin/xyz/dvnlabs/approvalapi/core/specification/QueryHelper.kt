@@ -55,6 +55,10 @@ class QueryHelper {
             return this
         }
 
+        if (!isTypeOK(required, value)) {
+            return this
+        }
+
         when (operation) {
 
             QueryOperation.EQUAL -> {
@@ -118,13 +122,6 @@ class QueryHelper {
     }
 
     private fun specificType(field: String, value: Any?, operation: QueryOperation, required: Boolean): QueryHelper {
-        if (value?.isString() == true && required && value.toString().isEmpty()) {
-            println("QueryHelper:: Specified value is string and the required flag is true not allowed to be empty")
-            return this
-        } else if (value?.isList() == true && required && (value as Collection<*>).isEmpty()) {
-            println("QueryHelper:: Specified value is collection and the required flag is true not allowed to be empty")
-            return this
-        }
 
         when (operation) {
             QueryOperation.MATCH_ANY -> {
@@ -152,13 +149,25 @@ class QueryHelper {
         return this
     }
 
+    private fun isTypeOK(required: Boolean, value: Any?): Boolean {
+        if (value == null && required) {
+            return false
+        } else if (value?.isString() == true && required && value.toString().isEmpty()) {
+            println("QueryHelper:: Specified value is string and the required flag is true not allowed to be empty")
+            return false
+        } else if (value?.isList() == true && required && (value as Collection<*>).isEmpty()) {
+            println("QueryHelper:: Specified value is collection and the required flag is true not allowed to be empty")
+            return false
+        }
+        return true
+    }
+
     /**
      * ## and()
      * Function for make addOne() before this method chain to the andOperator
      */
     fun and(): QueryHelper {
         criteria = criteria.andOperator(*criteriaChain.map { it }.toTypedArray())
-        criteriaChain = emptyList<Criteria>().toMutableList()
         return this
     }
 
@@ -168,7 +177,6 @@ class QueryHelper {
      */
     fun or(): QueryHelper {
         criteria = criteria.orOperator(*criteriaChain.map { it }.toTypedArray())
-        criteriaChain = emptyList<Criteria>().toMutableList()
         return this
     }
 
@@ -190,6 +198,9 @@ class QueryHelper {
      * - Before buildQuery() , you must identifying addOne() and then specify what you want eq: and() , or()
      */
     fun buildQuery(): Query {
+        if (criteriaChain.isEmpty()) {
+            return Query()
+        }
         return Query().addCriteria(criteria)
     }
 

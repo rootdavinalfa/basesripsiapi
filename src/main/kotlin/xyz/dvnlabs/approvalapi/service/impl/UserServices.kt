@@ -97,7 +97,7 @@ class UserServices : UserService {
             SecurityContextHolder.getContext().authentication = authentication
             val principal = authentication.principal as UserDetails
             val jwt = jwtUtils.generateToken(authentication)
-            return UserLoginResponse(jwt, principal.username, "")
+            return UserLoginResponse(jwt, principal.username, principal.authorities)
         } catch (e: AuthenticationException) {
             println("Username ${e.message}")
             throw UnauthorizedException(e.message!!)

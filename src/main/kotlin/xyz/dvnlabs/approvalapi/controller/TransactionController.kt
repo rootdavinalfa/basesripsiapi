@@ -74,12 +74,29 @@ class TransactionController {
     @ApiOperation("Page")
     fun listPage(
         pageable: Pageable,
-        @RequestParam(defaultValue = "") statusFlag: String
+        @RequestParam(defaultValue = "") statusFlag: String,
+        @RequestParam(defaultValue = "") userRequest: String,
+        @RequestParam(defaultValue = "") userApprove: String,
+        @RequestParam(defaultValue = "") userDelivery: String,
+        @RequestParam(defaultValue = "") statusFlagIn: String
     ): Page<TransactionDTO> {
+        val queryHelper = QueryHelper()
+            .addOne("statusFlag", statusFlag, QueryOperation.EQUAL)
+            .addOne("userRequest", userRequest, QueryOperation.EQUAL)
+            .addOne("userApprove", userApprove, QueryOperation.EQUAL)
+            .addOne("userDelivery", userDelivery, QueryOperation.EQUAL)
+
+        if (statusFlagIn.isNotEmpty()) {
+            queryHelper.addOne(
+                "statusFlag",
+                statusFlagIn.split(","),
+                QueryOperation.EQUAL_IN
+            )
+        }
+
         return transactionService.findAllPageWithQuery(
             pageable,
-            QueryHelper()
-                .addOne("statusFlag", statusFlag, QueryOperation.EQUAL)
+            queryHelper
                 .or()
                 .buildQuery()
         ).map {
@@ -121,15 +138,26 @@ class TransactionController {
         return transactionMapper.asDTO(transactionService.createTransaction(transaction, transactionDetail))
     }
 
-    @PutMapping("/validate/{idTransaction}")
+    @PutMapping("/validate")
     @ApiOperation("Validate Transaction")
     fun validateTransaction(
+        @RequestBody request: RequestTransactionDTO
+    ): TransactionDTO {
+        val transaction = transactionMapper.asEntity(request.transactionDTO)
+        val transactionDetail = transactionDetailMapper.asEntityList(request.transactionDetails)
+        return transactionMapper
+            .asDTO(
+                transactionService.validationTransaction(transaction, transactionDetail)
+            )
+    }
+
+    @PutMapping("/cancel/{idTransaction}")
+    @ApiOperation("Cancel Transaction")
+    fun cancelTransaction(
         @PathVariable idTransaction: Long
     ): TransactionDTO {
         return transactionMapper
-            .asDTO(
-                transactionService.validationTransaction(idTransaction)
-            )
+            .asDTO(transactionService.validateCancelTransaction(idTransaction))
     }
 
     @PutMapping("/attach-delivery/{idTransaction}/{iduser}")

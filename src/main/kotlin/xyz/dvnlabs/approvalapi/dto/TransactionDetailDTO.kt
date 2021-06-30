@@ -13,5 +13,6 @@ data class TransactionDetailDTO(
     var id: String = "",
     var detailRequest: String = "",
     var drug: Drugs? = null,
-    var qty: Double = 0.0
+    var qty: Double = 0.0,
+    var realQty: Double = 0.0
 ) : AuditDTO()

@@ -6,6 +6,8 @@
 
 package xyz.dvnlabs.approvalapi.dto
 
-class UserLoginResponse(var token: String, var username: String, var email: String) {
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+
+class UserLoginResponse(var token: String, var username: String, var authorities: List<SimpleGrantedAuthority>?) {
     var authToken = "Bearer $token"
 }

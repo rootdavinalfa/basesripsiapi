@@ -19,4 +19,5 @@ data class TransactionDTO(
     var userRequest: String? = null,
     var userApprove: String? = null,
     var userDelivery: String? = null,
+    var userCancel: String? = null,
 ) : AuditDTO()
