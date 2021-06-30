@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 import xyz.dvnlabs.approvalapi.entity.Transaction
 
 @Repository
-interface TransactionDAO : GenericDAO<Transaction,Long>{
+interface TransactionDAO : GenericDAO<Transaction, Long>, SpecificationRepository<Transaction> {
 
     @Aggregation(
         "{" +

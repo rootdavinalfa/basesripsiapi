@@ -18,5 +18,6 @@ data class TransactionDetail(
     var detailRequest: String = "",
     @DBRef(lazy = true)
     var drug: Drugs? = null,
-    var qty: Double = 0.0
+    var qty: Double = 0.0,
+    var realQty: Double = 0.0
 ) : AuditEntity()

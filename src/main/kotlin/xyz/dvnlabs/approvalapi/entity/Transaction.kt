@@ -19,10 +19,10 @@ data class Transaction(
     /**
      * Status flag
      * 1 = OPEN
-     * 2 = ON PROGRESS WAREHOUSE
+     * 2 = ON PROGRESS WAREHOUSE (validated)
      * 3 = ON DELIVERY
      * 4 = DELIVERED
-     * 5 = REJECTED
+     * 5 = CANCELED
      */
     var statusFlag: String = "1",
     var message: String = "",
@@ -30,4 +30,5 @@ data class Transaction(
     var userRequest: String? = null,
     var userApprove: String? = null,
     var userDelivery: String? = null,
+    var userCancel: String? = null,
 ) : AuditEntity()
