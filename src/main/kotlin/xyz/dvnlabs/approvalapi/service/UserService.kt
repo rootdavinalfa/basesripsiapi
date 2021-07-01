@@ -29,4 +29,6 @@ interface UserService : GenericService<User, String>, UserDetailsService {
 
     fun isInitialized() : Boolean
 
+    fun getUserByUsername(userName : String) : User?
+
 }

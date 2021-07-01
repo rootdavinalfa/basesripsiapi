@@ -252,4 +252,8 @@ class UserServices : UserService {
         return userDAO.findAllQuery(query, User::class.java)
     }
 
+    override fun getUserByUsername(userName: String): User? {
+        return userDAO.findByUserName(userName)
+    }
+
 }

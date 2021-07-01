@@ -34,6 +34,12 @@ class UserController {
         return userService.findById(id)?.let { userMapper.asUserNoPasswordDTO(it) }
     }
 
+    @GetMapping("/username/{user}")
+    @ApiOperation("Find by username")
+    fun findByUserName(@PathVariable user: String): UserNoPasswordDTO? {
+        return userService.getUserByUsername(user)?.let { userMapper.asUserNoPasswordDTO(it) }
+    }
+
     @PostMapping("/attach-role/{userid}/{roleid}")
     @ApiOperation("Attach role")
     fun attachRole(
