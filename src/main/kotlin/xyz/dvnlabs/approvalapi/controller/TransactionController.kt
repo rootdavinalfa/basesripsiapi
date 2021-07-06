@@ -78,6 +78,14 @@ class TransactionController {
             .addOne("userApprove", userApprove, QueryOperation.EQUAL)
             .addOne("userDelivery", userDelivery, QueryOperation.EQUAL)
 
+        if (statusFlagIn.isNotEmpty()) {
+            queryHelper.addOne(
+                "statusFlag",
+                statusFlagIn.split(","),
+                QueryOperation.EQUAL_IN
+            )
+        }
+
         return transactionMapper.asDTOList(
             transactionService
                 .findAllWithQuery(
