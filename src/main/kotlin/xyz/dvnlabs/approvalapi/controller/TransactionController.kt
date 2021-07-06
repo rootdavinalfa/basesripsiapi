@@ -81,7 +81,7 @@ class TransactionController {
         return transactionMapper.asDTOList(
             transactionService
                 .findAllWithQuery(
-                    queryHelper.or()
+                    queryHelper.and()
                         .buildQuery()
                 )
         )
@@ -115,7 +115,7 @@ class TransactionController {
         return transactionService.findAllPageWithQuery(
             pageable,
             queryHelper
-                .or()
+                .and()
                 .buildQuery()
         ).map {
             return@map transactionMapper.asDTO(it)
