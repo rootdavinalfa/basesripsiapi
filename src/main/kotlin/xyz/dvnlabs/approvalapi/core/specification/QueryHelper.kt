@@ -104,7 +104,7 @@ class QueryHelper {
             }
 
             else -> {
-                specificType(field, value, operation, required)
+                specificType(field, value, operation)
             }
         }
 
@@ -121,7 +121,7 @@ class QueryHelper {
         criteriaChain.add(criteria)
     }
 
-    private fun specificType(field: String, value: Any?, operation: QueryOperation, required: Boolean): QueryHelper {
+    private fun specificType(field: String, value: Any?, operation: QueryOperation): QueryHelper {
 
         when (operation) {
             QueryOperation.MATCH_ANY -> {
@@ -135,11 +135,11 @@ class QueryHelper {
             }
 
             QueryOperation.EQUAL_IN -> {
-                criteriaChain.add(Criteria.where(field).`in`(value))
+                criteriaChain.add(Criteria.where(field).`in`((value as List<*>)))
             }
 
             QueryOperation.NOT_IN -> {
-                criteriaChain.add(Criteria.where(field).nin(value))
+                criteriaChain.add(Criteria.where(field).nin((value as List<*>)))
             }
 
             else -> {
