@@ -8,17 +8,23 @@ package xyz.dvnlabs.approvalapi.core.security
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import xyz.dvnlabs.approvalapi.entity.Role
 import xyz.dvnlabs.approvalapi.entity.User
 
 class UserDetails(
     private var userName: String,
     private var password: String,
     private var idUser: String,
-    private var authorities: List<SimpleGrantedAuthority>?
+    private var authorities: List<SimpleGrantedAuthority>?,
+    private var roles: List<Role>?
 ) : UserDetails {
 
     fun getIdUser(): String {
         return idUser
+    }
+
+    fun getRoles(): List<Role>? {
+        return roles
     }
 
     override fun getAuthorities(): List<SimpleGrantedAuthority>? {
@@ -52,7 +58,7 @@ class UserDetails(
     companion object {
         fun build(user: User): xyz.dvnlabs.approvalapi.core.security.UserDetails {
             val authoritiess = user.roles?.map { SimpleGrantedAuthority(it.roleName) }?.toList()
-            return UserDetails(user.userName, user.password, user.id, authoritiess)
+            return UserDetails(user.userName, user.password, user.id, authoritiess, user.roles)
         }
     }
 }

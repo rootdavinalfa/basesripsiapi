@@ -65,8 +65,26 @@ class TransactionController {
 
     @GetMapping("/list")
     @ApiOperation("List")
-    fun list(): List<TransactionDTO> {
-        return transactionMapper.asDTOList(transactionService.findAll())
+    fun list(
+        @RequestParam(defaultValue = "") statusFlag: String,
+        @RequestParam(defaultValue = "") userRequest: String,
+        @RequestParam(defaultValue = "") userApprove: String,
+        @RequestParam(defaultValue = "") userDelivery: String,
+        @RequestParam(defaultValue = "") statusFlagIn: String
+    ): List<TransactionDTO> {
+        val queryHelper = QueryHelper()
+            .addOne("statusFlag", statusFlag, QueryOperation.EQUAL)
+            .addOne("userRequest", userRequest, QueryOperation.EQUAL)
+            .addOne("userApprove", userApprove, QueryOperation.EQUAL)
+            .addOne("userDelivery", userDelivery, QueryOperation.EQUAL)
+
+        return transactionMapper.asDTOList(
+            transactionService
+                .findAllWithQuery(
+                    queryHelper.or()
+                        .buildQuery()
+                )
+        )
     }
 
 

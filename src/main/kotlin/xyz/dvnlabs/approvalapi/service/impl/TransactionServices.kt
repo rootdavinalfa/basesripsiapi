@@ -88,6 +88,10 @@ class TransactionServices : TransactionService {
         return transactionDAO.findAll()
     }
 
+    override fun findAllWithQuery(query: Query): List<Transaction> {
+        return transactionDAO.findAllQuery(query, Transaction::class.java)
+    }
+
     override fun findAllPage(pageable: Pageable): Page<Transaction> {
         return transactionDAO.findAll(pageable)
     }
