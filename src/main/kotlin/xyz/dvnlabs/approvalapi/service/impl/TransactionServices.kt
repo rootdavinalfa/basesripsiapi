@@ -167,7 +167,9 @@ class TransactionServices : TransactionService {
         println("Transaction Begin")
         transactionDTO.userRequest = GlobalContext.getUsername()
         transactionDetails?.forEach {
-            transactionDTO.transactionDetails = mutableListOf()
+            if (transactionDTO.transactionDetails.isNullOrEmpty()) {
+                transactionDTO.transactionDetails = mutableListOf()
+            }
             transactionDTO.transactionDetails?.add(transactionDetailService.save(it))
             println(transactionDTO.transactionDetails)
         }
