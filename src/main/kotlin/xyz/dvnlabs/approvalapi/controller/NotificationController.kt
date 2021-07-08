@@ -61,8 +61,19 @@ class NotificationController {
 
     @GetMapping("/list")
     @ApiOperation("List")
-    fun list(): List<NotificationDTO> {
-        return notificationMapper.asDTOList(notificationService.findAll())
+    fun list(
+        @RequestParam(defaultValue = "") sender: String,
+        @RequestParam(defaultValue = "") target: String
+    ): List<NotificationDTO> {
+        return notificationMapper.asDTOList(
+            notificationService.findAllWithQuery(
+                QueryHelper()
+                    .addOne("sender", sender, QueryOperation.EQUAL)
+                    .addOne("target", target, QueryOperation.EQUAL)
+                    .or()
+                    .buildQuery()
+            )
+        )
     }
 
 
@@ -70,12 +81,14 @@ class NotificationController {
     @ApiOperation("Page")
     fun listPage(
         pageable: Pageable,
+        @RequestParam(defaultValue = "") sender: String,
         @RequestParam(defaultValue = "") target: String
     ): Page<NotificationDTO> {
         return notificationService.findAllPageWithQuery(
             pageable, QueryHelper()
+                .addOne("sender", sender, QueryOperation.EQUAL)
                 .addOne("target", target, QueryOperation.EQUAL)
-                .and()
+                .or()
                 .buildQuery()
         ).map {
             return@map notificationMapper.asDTO(it)
