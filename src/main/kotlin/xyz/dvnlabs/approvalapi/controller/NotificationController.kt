@@ -17,6 +17,7 @@ import xyz.dvnlabs.approvalapi.core.exception.InvalidRequestException
 import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
 import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.dto.NotificationDTO
+import xyz.dvnlabs.approvalapi.entity.Transaction
 import xyz.dvnlabs.approvalapi.mapper.NotificationMapper
 import xyz.dvnlabs.approvalapi.service.NotificationService
 
@@ -63,13 +64,20 @@ class NotificationController {
     @ApiOperation("List")
     fun list(
         @RequestParam(defaultValue = "") sender: String,
-        @RequestParam(defaultValue = "") target: String
+        @RequestParam(defaultValue = "") target: String,
+        @RequestParam(required = false) idtransaction: Long?,
     ): List<NotificationDTO> {
         return notificationMapper.asDTOList(
             notificationService.findAllWithQuery(
                 QueryHelper()
                     .addOne("sender", sender, QueryOperation.EQUAL)
                     .addOne("target", target, QueryOperation.EQUAL)
+                    .addOne(
+                        "transaction",
+                        if (idtransaction == null) null
+                        else Transaction(idTransaction = idtransaction),
+                        QueryOperation.EQUAL
+                    )
                     .or()
                     .buildQuery()
             )
