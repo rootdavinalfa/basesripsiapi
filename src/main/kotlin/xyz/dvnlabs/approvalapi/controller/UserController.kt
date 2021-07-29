@@ -12,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import xyz.dvnlabs.approvalapi.core.specification.QueryHelper
+import xyz.dvnlabs.approvalapi.core.specification.QueryOperation
 import xyz.dvnlabs.approvalapi.dto.UserNoPasswordDTO
 import xyz.dvnlabs.approvalapi.entity.User
 import xyz.dvnlabs.approvalapi.mapper.UserMapper
+import xyz.dvnlabs.approvalapi.service.RoleService
 import xyz.dvnlabs.approvalapi.service.UserService
 
 @RequestMapping("/user")
@@ -27,6 +30,9 @@ class UserController {
 
     @Autowired
     private lateinit var userMapper: UserMapper
+
+    @Autowired
+    private lateinit var roleService: RoleService
 
     @GetMapping("/{id}")
     @ApiOperation("Find by id")
@@ -88,8 +94,23 @@ class UserController {
 
     @GetMapping("/list")
     @ApiOperation("List")
-    fun list(): List<UserNoPasswordDTO> {
-        return userService.findAll().map { userMapper.asUserNoPasswordDTO(it) }
+    fun list(
+        @RequestParam(defaultValue = "") roleName: String,
+        @RequestParam(defaultValue = "") userName: String
+    ): List<UserNoPasswordDTO> {
+        val query = QueryHelper()
+            .addOne("userName", userName, QueryOperation.EQUAL)
+
+        if (roleName.isNotEmpty()) {
+            val role = roleService.getRoleByName(roleName)
+            query.addOne("roles", role, QueryOperation.EQUAL)
+        }
+
+        return userService.findAllWithQuery(
+            query
+                .or()
+                .buildQuery()
+        ).map { userMapper.asUserNoPasswordDTO(it) }
     }
 
     @GetMapping("/page")

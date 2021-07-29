@@ -189,6 +189,10 @@ class UserServices : UserService {
         return userDAO.findAll(pageable)
     }
 
+    override fun findAllPageWithQuery(pageable: Pageable, query: Query): Page<User> {
+        return userDAO.findAllQueryPage(query, pageable, User::class.java)
+    }
+
     override fun delete(id: String) {
         return userDAO.findById(id).map { rowExist ->
             userDAO.deleteById(rowExist.id)
