@@ -255,7 +255,7 @@ class TransactionServices : TransactionService {
     }
 
     override fun attachDelivery(idTransaction: Long, idUser: String): Transaction? {
-        return roleService.getRoleByName("ROLE_VGUDANG")
+        return roleService.getRoleByName("ROLE_GUDANG")
             ?.let { role ->
                 val user = userService.findAllWithQuery(
                     QueryHelper()
@@ -297,7 +297,7 @@ class TransactionServices : TransactionService {
     override fun delivered(idTransaction: Long, message: String): Transaction? {
         return roleService.getRoleByName("ROLE_APOTIK")
             ?.let { role ->
-                val user = userService.findAllWithQuery(
+                userService.findAllWithQuery(
                     QueryHelper()
                         .addOne("roles", Role(id = role.id), QueryOperation.EQUAL)
                         .and()
@@ -311,7 +311,6 @@ class TransactionServices : TransactionService {
                         throw InvalidRequestException("Transaction not on delivery")
                 }
                 transaction?.statusFlag = "4"
-                transaction?.userDelivery = user.userName
 
                 if (transaction != null) {
                     transaction = update(transaction)
@@ -355,6 +354,8 @@ class TransactionServices : TransactionService {
             if (it.statusFlag == "4") {
                 throw InvalidRequestException("Cancel tidak dapat dilakukan pada barang yang sudah diterima")
             }
+
+            it.userCancel = GlobalContext.getUsername()
 
             it.transactionDetails?.forEach {
                 it.drug?.let { drug ->
