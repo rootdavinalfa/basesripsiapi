@@ -196,7 +196,7 @@ class TransactionServices : TransactionService {
         return roleService.getRoleByName("ROLE_VGUDANG")
             ?.let { role ->
 
-                val user = userService.findAllWithQuery(
+                userService.findAllWithQuery(
                     QueryHelper()
                         .addOne("roles", Role(id = role.id), QueryOperation.EQUAL)
                         .and()
@@ -211,7 +211,7 @@ class TransactionServices : TransactionService {
                 }
 
                 transaction.statusFlag = "2"
-                transaction.userApprove = user.userName
+                transaction.userApprove = GlobalContext.getUsername()
 
 
                 transaction.transactionDetails?.forEach {
@@ -255,9 +255,9 @@ class TransactionServices : TransactionService {
     }
 
     override fun attachDelivery(idTransaction: Long, idUser: String): Transaction? {
-        return roleService.getRoleByName("ROLE_GUDANG")
+        return roleService.getRoleByName("ROLE_VGUDANG")
             ?.let { role ->
-                val user = userService.findAllWithQuery(
+                userService.findAllWithQuery(
                     QueryHelper()
                         .addOne("roles", Role(id = role.id), QueryOperation.EQUAL)
                         .and()
@@ -271,7 +271,7 @@ class TransactionServices : TransactionService {
                         throw InvalidRequestException("Transaction not validated, please validate first before attach delivery")
                 }
                 transaction?.statusFlag = "3"
-                transaction?.userDelivery = user.userName
+                transaction?.userDelivery = userService.findById(idUser)?.userName
 
                 if (transaction != null) {
                     transaction = update(transaction)
