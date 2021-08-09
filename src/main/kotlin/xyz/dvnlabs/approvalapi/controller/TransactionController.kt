@@ -198,4 +198,13 @@ class TransactionController {
             )
     }
 
+    @PutMapping("/delivered/{idTransaction}")
+    @ApiOperation("Delivered Transaction")
+    fun deliveredTransaction(
+        @PathVariable idTransaction: Long
+    ): TransactionDTO {
+        return transactionMapper
+            .asDTO(transactionService.delivered(idTransaction, ""))
+    }
+
 }
