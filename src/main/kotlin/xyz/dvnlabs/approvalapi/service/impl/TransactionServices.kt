@@ -287,6 +287,18 @@ class TransactionServices : TransactionService {
                             )
                         )
 
+                    RxBus
+                        .publish(
+                            NotificationSenderDTO(
+                                userNameSender = GlobalContext.getUsername(),
+                                target = transaction.userRequest!!,
+                                targetKind = TargetKind.INDIVIDUAL,
+                                title = "Transaksi ID ${transaction.idTransaction} akan diantar",
+                                body = "Permintaan untuk ID:${transaction.idTransaction} akan diantar oleh: ${transaction.userDelivery}",
+                                data = transaction
+                            )
+                        )
+
                     return@let transaction
                 }
                 return@let null
