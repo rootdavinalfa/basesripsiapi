@@ -342,10 +342,10 @@ class TransactionServices : TransactionService {
                         .publish(
                             NotificationSenderDTO(
                                 userNameSender = GlobalContext.getUsername(),
-                                target = transaction.userApprove!!,
+                                target = transaction.userRequest!!,
                                 targetKind = TargetKind.INDIVIDUAL,
-                                title = "Permintaan barang sudah diterima",
-                                body = "Permintaan untuk ID:${transaction.idTransaction} sudah diterima oleh:: ${transaction.userRequest}",
+                                title = "Permintaan barang sudah selesai",
+                                body = "Permintaan untuk ID:${transaction.idTransaction} sudah selesai",
                                 data = transaction
                             )
                         )
