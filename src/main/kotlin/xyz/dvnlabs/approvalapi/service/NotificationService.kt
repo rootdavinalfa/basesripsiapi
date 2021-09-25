@@ -23,4 +23,6 @@ interface NotificationService : GenericService<Notification, String> {
         senderDTO: NotificationSenderDTO?
     ): List<Notification>
 
+    fun publishNotification(notificationSenderDTO: NotificationSenderDTO)
+
 }

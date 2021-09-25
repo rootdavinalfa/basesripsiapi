@@ -55,40 +55,37 @@ class NotificationServices : NotificationService {
         const val SERVICE_NAME = "Notification"
     }
 
-    init {
-        RxBus.listen(NotificationSenderDTO::class.java)
-            .subscribe {
-                when (it.targetKind) {
-                    TargetKind.INDIVIDUAL -> {
-                        simpMessagingTemplate
-                            .convertAndSendToUser(
-                                it.target,
-                                "/queue/notification",
-                                listenTransaction(it.data as Transaction, it.target, it)
-                            )
-                    }
-                    TargetKind.ROLE -> {
-
-                        roleService.getRoleByName(it.target)
-                            ?.let { role ->
-                                userService.findAllWithQuery(
-                                    QueryHelper()
-                                        .addOne("roles", Role(id = role.id), QueryOperation.EQUAL)
-                                        .and()
-                                        .buildQuery()
-                                ).forEach { user ->
-                                    it.target = user.userName
-                                    simpMessagingTemplate
-                                        .convertAndSendToUser(
-                                            user.userName,
-                                            "/queue/notification",
-                                            listenTransaction(it.data as Transaction, user.userName, it)
-                                        )
-                                }
-                            }
-                    }
-                }
+    override fun publishNotification(notificationSenderDTO: NotificationSenderDTO) {
+        when (notificationSenderDTO.targetKind) {
+            TargetKind.INDIVIDUAL -> {
+                simpMessagingTemplate
+                    .convertAndSendToUser(
+                        notificationSenderDTO.target,
+                        "/queue/notification",
+                        listenTransaction(notificationSenderDTO.data as Transaction, notificationSenderDTO.target, notificationSenderDTO)
+                    )
             }
+            TargetKind.ROLE -> {
+
+                roleService.getRoleByName(notificationSenderDTO.target)
+                    ?.let { role ->
+                        userService.findAllWithQuery(
+                            QueryHelper()
+                                .addOne("roles", Role(id = role.id), QueryOperation.EQUAL)
+                                .and()
+                                .buildQuery()
+                        ).forEach { user ->
+                            notificationSenderDTO.target = user.userName
+                            simpMessagingTemplate
+                                .convertAndSendToUser(
+                                    user.userName,
+                                    "/queue/notification",
+                                    listenTransaction(notificationSenderDTO.data as Transaction, user.userName, notificationSenderDTO)
+                                )
+                        }
+                    }
+            }
+        }
     }
 
     override fun findById(id: String): Notification? {

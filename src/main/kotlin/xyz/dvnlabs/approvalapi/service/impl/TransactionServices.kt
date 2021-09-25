@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import xyz.dvnlabs.approvalapi.core.bus.RxBus
 import xyz.dvnlabs.approvalapi.core.exception.InvalidRequestException
 import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
 import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
@@ -47,6 +46,9 @@ class TransactionServices : TransactionService {
 
     @Autowired
     private lateinit var drugService: DrugsService
+
+    @Autowired
+    private lateinit var notificationService: NotificationService
 
     override fun findById(id: Long): Transaction? {
         return transactionDAO
@@ -175,17 +177,17 @@ class TransactionServices : TransactionService {
         }
         val transaction = save(transactionDTO)
 
-        RxBus
-            .publish(
-                NotificationSenderDTO(
-                    userNameSender = GlobalContext.getUsername(),
-                    target = "ROLE_VGUDANG",
-                    targetKind = TargetKind.ROLE,
-                    title = "Permintaan Barang Baru",
-                    body = "Ada permintaan barang baru oleh: ${GlobalContext.getUsername()} silahkan dicek!",
-                    data = transaction
-                )
+        notificationService.publishNotification(
+            NotificationSenderDTO(
+                userNameSender = GlobalContext.getUsername(),
+                target = "ROLE_VGUDANG",
+                targetKind = TargetKind.ROLE,
+                title = "Permintaan Barang Baru",
+                body = "Ada permintaan barang baru oleh: ${GlobalContext.getUsername()} silahkan dicek!",
+                data = transaction
             )
+        )
+
         return transaction
     }
 
@@ -237,17 +239,16 @@ class TransactionServices : TransactionService {
                     }
                 }
                 transaction = update(transaction)
-                RxBus
-                    .publish(
-                        NotificationSenderDTO(
-                            userNameSender = GlobalContext.getUsername(),
-                            target = transaction.userRequest!!,
-                            targetKind = TargetKind.INDIVIDUAL,
-                            title = "Permintaan sudah divalidasi",
-                            body = "Permintaan untuk ID:${transaction.idTransaction} sudah divalidasi oleh ${transaction.userApprove}",
-                            data = transaction
-                        )
+                notificationService.publishNotification(
+                    NotificationSenderDTO(
+                        userNameSender = GlobalContext.getUsername(),
+                        target = transaction.userRequest!!,
+                        targetKind = TargetKind.INDIVIDUAL,
+                        title = "Permintaan sudah divalidasi",
+                        body = "Permintaan untuk ID:${transaction.idTransaction} sudah divalidasi oleh ${transaction.userApprove}",
+                        data = transaction
                     )
+                )
 
                 return@let transaction
 
@@ -275,29 +276,29 @@ class TransactionServices : TransactionService {
 
                 if (transaction != null) {
                     transaction = update(transaction)
-                    RxBus
-                        .publish(
-                            NotificationSenderDTO(
-                                userNameSender = GlobalContext.getUsername(),
-                                target = transaction.userDelivery!!,
-                                targetKind = TargetKind.INDIVIDUAL,
-                                title = "Silahkan antar permintaan barang berikut",
-                                body = "Permintaan untuk ID:${transaction.idTransaction} harus diantar ke: ${transaction.userRequest}",
-                                data = transaction
-                            )
-                        )
 
-                    RxBus
-                        .publish(
-                            NotificationSenderDTO(
-                                userNameSender = GlobalContext.getUsername(),
-                                target = transaction.userRequest!!,
-                                targetKind = TargetKind.INDIVIDUAL,
-                                title = "Transaksi ID ${transaction.idTransaction} akan diantar",
-                                body = "Permintaan untuk ID:${transaction.idTransaction} akan diantar oleh: ${transaction.userDelivery}",
-                                data = transaction
-                            )
+
+                    notificationService.publishNotification(
+                        NotificationSenderDTO(
+                            userNameSender = GlobalContext.getUsername(),
+                            target = transaction.userDelivery!!,
+                            targetKind = TargetKind.INDIVIDUAL,
+                            title = "Silahkan antar permintaan barang berikut",
+                            body = "Permintaan untuk ID:${transaction.idTransaction} harus diantar ke: ${transaction.userRequest}",
+                            data = transaction
                         )
+                    )
+
+                    notificationService.publishNotification(
+                        NotificationSenderDTO(
+                            userNameSender = GlobalContext.getUsername(),
+                            target = transaction.userRequest!!,
+                            targetKind = TargetKind.INDIVIDUAL,
+                            title = "Transaksi ID ${transaction.idTransaction} akan diantar",
+                            body = "Permintaan untuk ID:${transaction.idTransaction} akan diantar oleh: ${transaction.userDelivery}",
+                            data = transaction
+                        )
+                    )
 
                     return@let transaction
                 }
@@ -326,29 +327,28 @@ class TransactionServices : TransactionService {
 
                 if (transaction != null) {
                     transaction = update(transaction)
-                    RxBus
-                        .publish(
-                            NotificationSenderDTO(
-                                userNameSender = GlobalContext.getUsername(),
-                                target = transaction.userDelivery!!,
-                                targetKind = TargetKind.INDIVIDUAL,
-                                title = "Permintaan barang sudah diterima",
-                                body = "Permintaan untuk ID:${transaction.idTransaction} sudah diterima oleh: ${transaction.userRequest}",
-                                data = transaction
-                            )
-                        )
 
-                    RxBus
-                        .publish(
-                            NotificationSenderDTO(
-                                userNameSender = GlobalContext.getUsername(),
-                                target = transaction.userRequest!!,
-                                targetKind = TargetKind.INDIVIDUAL,
-                                title = "Permintaan barang sudah selesai",
-                                body = "Permintaan untuk ID:${transaction.idTransaction} sudah selesai",
-                                data = transaction
-                            )
+                    notificationService.publishNotification(
+                        NotificationSenderDTO(
+                            userNameSender = GlobalContext.getUsername(),
+                            target = transaction.userDelivery!!,
+                            targetKind = TargetKind.INDIVIDUAL,
+                            title = "Permintaan barang sudah diterima",
+                            body = "Permintaan untuk ID:${transaction.idTransaction} sudah diterima oleh: ${transaction.userRequest}",
+                            data = transaction
                         )
+                    )
+
+                    notificationService.publishNotification(
+                        NotificationSenderDTO(
+                            userNameSender = GlobalContext.getUsername(),
+                            target = transaction.userRequest!!,
+                            targetKind = TargetKind.INDIVIDUAL,
+                            title = "Permintaan barang sudah selesai",
+                            body = "Permintaan untuk ID:${transaction.idTransaction} sudah selesai",
+                            data = transaction
+                        )
+                    )
 
                     return@let transaction
                 }

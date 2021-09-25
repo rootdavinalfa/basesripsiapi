@@ -44,7 +44,7 @@ class WebsocketController {
         )
     }
 
-    @SubscribeMapping("/queue/notification")
+    @SubscribeMapping("/notification")
     fun notification(headerAccessor: StompHeaderAccessor): List<Notification> {
         println("Notification")
         headerAccessor.user?.let {
