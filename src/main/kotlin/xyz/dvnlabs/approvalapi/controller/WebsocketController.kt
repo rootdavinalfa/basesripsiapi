@@ -8,7 +8,6 @@ package xyz.dvnlabs.approvalapi.controller
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.handler.annotation.MessageMapping
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.messaging.simp.annotation.SendToUser
 import org.springframework.messaging.simp.annotation.SubscribeMapping
@@ -45,12 +44,10 @@ class WebsocketController {
     }
 
     @SubscribeMapping("/notification")
-    fun notification(headerAccessor: StompHeaderAccessor): List<Notification> {
-        println("Notification")
-        headerAccessor.user?.let {
-            return notificationService.listenTransaction(null, it.name, null)
-        }
-        return emptyList()
+    fun notification(headerAccessor: StompHeaderAccessor): Notification {
+        return headerAccessor.user?.let {
+            return@let notificationService.listenTransaction(null, it.name, null)
+        } ?: Notification()
     }
 
 }

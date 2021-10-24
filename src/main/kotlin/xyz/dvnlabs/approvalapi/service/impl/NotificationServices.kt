@@ -9,12 +9,13 @@ package xyz.dvnlabs.approvalapi.service.impl
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import xyz.dvnlabs.approvalapi.core.bus.RxBus
 import xyz.dvnlabs.approvalapi.core.exception.ResourceExistsException
 import xyz.dvnlabs.approvalapi.core.exception.ResourceNotFoundException
 import xyz.dvnlabs.approvalapi.core.helper.CommonHelper
@@ -62,7 +63,11 @@ class NotificationServices : NotificationService {
                     .convertAndSendToUser(
                         notificationSenderDTO.target,
                         "/queue/notification",
-                        listenTransaction(notificationSenderDTO.data as Transaction, notificationSenderDTO.target, notificationSenderDTO)
+                        listenTransaction(
+                            notificationSenderDTO.data as Transaction,
+                            notificationSenderDTO.target,
+                            notificationSenderDTO
+                        )
                     )
             }
             TargetKind.ROLE -> {
@@ -80,7 +85,11 @@ class NotificationServices : NotificationService {
                                 .convertAndSendToUser(
                                     user.userName,
                                     "/queue/notification",
-                                    listenTransaction(notificationSenderDTO.data as Transaction, user.userName, notificationSenderDTO)
+                                    listenTransaction(
+                                        notificationSenderDTO.data as Transaction,
+                                        user.userName,
+                                        notificationSenderDTO
+                                    )
                                 )
                         }
                     }
@@ -153,10 +162,10 @@ class NotificationServices : NotificationService {
         transaction: Transaction?,
         userName: String,
         senderDTO: NotificationSenderDTO?
-    ): List<Notification> {
+    ): Notification {
         if (senderDTO != null && transaction != null) {
 
-            save(
+            return save(
                 Notification(
                     title = senderDTO.title,
                     body = senderDTO.body,
@@ -165,26 +174,20 @@ class NotificationServices : NotificationService {
                     transaction = transaction
                 )
             )
-
-            return findAllWithQuery(
-                QueryHelper()
-                    .addOne("target", userName, QueryOperation.EQUAL)
-                    .and()
-                    .buildQuery()
-            )
         }
 
         //Return notification list
         if (userName.isNotEmpty()) {
-            return findAllWithQuery(
+            return findAllPageWithQuery(
+                PageRequest.of(0, 1, Sort.by("createdDate").descending()),
                 QueryHelper()
                     .addOne("target", userName, QueryOperation.EQUAL)
                     .and()
                     .buildQuery()
-            )
+            ).firstOrNull() ?: Notification()
         }
 
-        return emptyList()
+        return Notification()
     }
 
 }

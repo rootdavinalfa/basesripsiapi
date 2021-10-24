@@ -21,7 +21,7 @@ interface NotificationService : GenericService<Notification, String> {
         transaction: Transaction?,
         userName: String,
         senderDTO: NotificationSenderDTO?
-    ): List<Notification>
+    ): Notification
 
     fun publishNotification(notificationSenderDTO: NotificationSenderDTO)
 
