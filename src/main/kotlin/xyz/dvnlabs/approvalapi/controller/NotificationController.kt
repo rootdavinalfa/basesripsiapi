@@ -78,7 +78,7 @@ class NotificationController {
                         else Transaction(idTransaction = idtransaction),
                         QueryOperation.EQUAL
                     )
-                    .or()
+                    .and()
                     .buildQuery()
             )
         )
